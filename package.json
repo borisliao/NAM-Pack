@@ -1,0 +1,22 @@
+{
+  "name": "nam-pack-launcher",
+  "version": "0.0.1",
+  "description": "A minecraft launcher for a custom mod pack",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "NAM",
+    "pack",
+    "minecraft",
+    "not",
+    "another"
+  ],
+  "author": "Boris Liao",
+  "license": "UNLICENSED",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^3.1.0"
+  }
+}
