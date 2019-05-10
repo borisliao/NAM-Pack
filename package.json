@@ -15,7 +15,9 @@
   ],
   "author": "Boris Liao",
   "license": "BSD-2-Clause",
-  "dependencies": {},
+  "dependencies": {
+    "ts-minecraft": "^5.0.2-beta"
+  },
   "devDependencies": {
     "electron": "^3.1.4"
   },
