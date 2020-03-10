@@ -109,7 +109,7 @@ if(process.platform == 'darwin'){
   mainMenuTemplate.unshift({});
 }
 
-// Add developer tools item if not in production
+// Add developer tools item if in production
 if(process.env.NODE_ENV !== 'production'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
