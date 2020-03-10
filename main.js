@@ -62,7 +62,7 @@ ipcMain.on('credentials',function(e,item){
 })
 
 // catch play button press
-ipcMain.on('playButton',function(e){
+ipcMain.on('updateButton',function(e){
   mainWindow.close();
 })
 

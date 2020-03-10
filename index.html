@@ -5,7 +5,7 @@
     <title>NAM Pack</title>
   </head>
   <body>
-    <h1>Welcome to the NAM Pack!</h1>
+    <h1>Welcome to the NAM Pack Updater!</h1>
     <!-- All of the Node.js APIs are available in this renderer process. -->
     We are using Node.js <script>document.write(process.versions.node)</script>,
     Chromium <script>document.write(process.versions.chrome)</script>,
@@ -13,16 +13,11 @@
     
     <br>
     <br>
-    <button type="button" onclick="playButton()">Play!</button>
+    <button type="button" onclick="updateButton()">Update!</button>
 
     <script>
-      const electron = require('electron');
-      const {ipcRenderer} = electron;
 
-      function playButton(){
-        
-        ipcRenderer.send('playButton');
-      }
+      require('./buttons.js')
     </script>
   </body>
 </html>
