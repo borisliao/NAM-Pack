@@ -1,6 +1,6 @@
 # NAM Pack
 
-*Not Another Minecraft Pack is a collection of mods based on building on top of vanilla minecraft.
+*Not Another Minecraft Pack is a collection of mods based on building on top of vanilla minecraft.*
 
 ![Thumbnail of minimal](assets/img/logo.jpg)
 
