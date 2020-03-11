@@ -10,11 +10,14 @@ var App = {
         ipcRenderer.send('close');
     },
     changeButton: function (state,action){
-        document.getElementsByTagName("button")[0].disabled = state;
-        document.getElementsByTagName("button")[0].onclick = action;
+        document.getElementById("main-button").disabled = state;
+        document.getElementById("main-button").onclick = action;
+        
+    },
+    state: function(message){
+        document.getElementsByTagName("state")
     }
 }
 
-console.log("On")
 // Enable the button
 App.changeButton(false, App.close);
