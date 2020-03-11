@@ -4,6 +4,17 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
 
-function updateButton(){
-    ipcRenderer.send('updateButton');
-};
+// Main internal API for the main window 
+var App = {
+    close: function () {
+        ipcRenderer.send('close');
+    },
+    changeButton: function (state,action){
+        document.getElementsByTagName("button")[0].disabled = state;
+        document.getElementsByTagName("button")[0].onclick = action;
+    }
+}
+
+console.log("On")
+// Enable the button
+App.changeButton(false, App.close);
