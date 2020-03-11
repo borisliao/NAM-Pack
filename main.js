@@ -66,8 +66,8 @@ ipcMain.on('credentials',function(e,item){
   loginWindow.close();
 })
 
-// catch update button press
-ipcMain.on('updateButton',function(e){
+// catch close call
+ipcMain.on('close',function(e){
   mainWindow.close();
 })
 
