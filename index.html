@@ -5,20 +5,17 @@
     <title>NAM Pack</title>
   </head>
   <body>
-    <h1>Welcome to the NAM Pack Updater!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-    
-    <br>
-    <br>
-    <button type="button" onclick="updateButton()">Update!</button>
-
-    <script>
-
-      require('./buttons.js')
-    </script>
+    <div class="title">
+      <h1>Welcome to the NAM Pack Updater!</h1>
+      <i> NAM Pack Updater version <script>document.write(process.env.npm_package_version)</script></i>
+    </div>
+    <div class="state">
+      Loading...
+    </div>
+    <div class="update">
+      <button type="button" onclick="updateButton()"> Update! </button>
+    </div>
+    <script src="./renderer.js"></script>
   </body>
 </html>
   
