@@ -26,7 +26,7 @@ function createWindow () {
   if(process.env.NODE_ENV !== 'production'){
     mainWindow.toggleDevTools()
   }
-  
+
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -66,7 +66,7 @@ ipcMain.on('credentials',function(e,item){
   loginWindow.close();
 })
 
-// catch play button press
+// catch update button press
 ipcMain.on('updateButton',function(e){
   mainWindow.close();
 })
