@@ -12,12 +12,12 @@ var App = {
     changeButton: function (state,action){
         document.getElementById("main-button").disabled = state;
         document.getElementById("main-button").onclick = action;
-        
     },
     state: function(message){
-        document.getElementsByTagName("state")
+        document.getElementById("state").innerText = message
     }
 }
 
 // Enable the button
+App.state("Loading...")
 App.changeButton(false, App.close);
