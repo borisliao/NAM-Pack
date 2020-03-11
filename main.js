@@ -22,6 +22,11 @@ function createWindow () {
   // Insert menu
   Menu.setApplicationMenu(mainMenu);
 
+  // Turn on dev tools if in production
+  if(process.env.NODE_ENV !== 'production'){
+    mainWindow.toggleDevTools()
+  }
+  
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
