@@ -41,7 +41,7 @@ function logWindow () {
   // Create the browser window.
   loginWindow = new BrowserWindow({width: 400, height: 200})
 
-  // and load the index.html of the app.
+  // and load the login.html of the app.
   loginWindow.loadFile('login.html')
 
   // loginWindow.setMenu(null);
