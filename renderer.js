@@ -3,6 +3,7 @@
 // All of the Node.js APIs are available in this process.
 const electron = require('electron');
 const {ipcRenderer} = electron;
+const app = require('electron').remote.app
 
 // Main internal API for the main window 
 var App = {
@@ -18,6 +19,8 @@ var App = {
     }
 }
 
-// Enable the button
 App.state("Loading...")
+
+// Find MultiMC instance
+console.log(app.getAppPath())
 App.changeButton(false, App.close);
