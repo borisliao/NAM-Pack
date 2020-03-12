@@ -2,6 +2,7 @@
 const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 const url = require('url');
 const path = require('path');
+const {download} = require("electron-dl");
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -26,6 +27,12 @@ function createWindow () {
   if(process.env.NODE_ENV == 'test'){
     mainWindow.toggleDevTools()
   }
+
+  ipcMain.on("download", (event, info) => {
+    info.properties.onProgress = status => mainWindow.webContents.send("download progress", status);
+    download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+        .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath()));
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

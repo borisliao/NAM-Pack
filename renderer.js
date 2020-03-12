@@ -24,7 +24,19 @@ var App = {
         document.getElementById("state").style = "background-color:" + color
     },
     downloadmc: function(){
-        console.log("download")
+        App.statebg("transparent")
+        App.state("Downloading from official website...")
+        if(process.platform == 'darwin'){
+            ipcRenderer.send("download", {
+                url: "https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz",
+                properties: {directory: app.getPath("userData")}
+            });
+        }else{
+            ipcRenderer.send("download", {
+                url: "https://files.multimc.org/downloads/mmc-stable-win32.zip",
+                properties: {directory: app.getPath("userData")}
+            });
+        }
     },
     import: function(){
         console.log("import")
@@ -35,12 +47,26 @@ App.state("Loading...")
 App.changeButton(true, null, "Loading...")
 
 // Check for existing MultiMC instance in userData
-var mcpath = path.join(app.getPath("userData"), "MultiMC")
+if(process.platform == 'darwin'){
+    var mcpath = path.join(app.getPath("userData"), "MultiMC.app")
+}else{
+    var mcpath = path.join(app.getPath("userData"), "MultiMC")
+}
+
 if (fs.existsSync(mcpath)) {
     App.state("MultiMC instance found")
     App.changeButton(false, App.close, "Close");
-  } else {
+} else {
     App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
     App.statebg("lightblue")
     App.changeButton(false, App.downloadmc, "Download New");
 }
+
+ipcRenderer.on("download complete", (event, file) => {
+    App.state("Download finished! saved at: " + file)
+});
+
+ipcRenderer.on("download progress", (event, progress) => {
+    const cleanProgressInPercentages = Math.floor(progress.percent * 100); // Without decimal point
+    App.state("Downloading: " + cleanProgressInPercentages + '%')
+});
