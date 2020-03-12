@@ -9,6 +9,19 @@ var path = require('path');
 
 // Main internal API for the main window 
 var App = {
+    disableButtons: function(){
+        buttons = document.getElementsByTagName("button")
+        for(var i = 0; i < buttons.length; i++){
+            console.log(buttons[i])
+            buttons[i].disabled = true
+        }
+    },
+    enableButtons: function(){
+        buttons = document.getElementsByTagName("button")
+        for(var i = 0; i < buttons.length; i++){
+            buttons[i].disabled = false
+        }
+    },
     close: function () {
         ipcRenderer.send('close');
     },
@@ -24,6 +37,7 @@ var App = {
         document.getElementById("state").style = "background-color:" + color
     },
     downloadmc: function(){
+        App.disableButtons()
         App.statebg("transparent")
         App.state("Downloading from official website...")
         if(process.platform == 'darwin'){
@@ -31,7 +45,7 @@ var App = {
                 url: "https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz",
                 properties: {directory: app.getPath("userData")}
             });
-        }else{
+        }else if(process.platform == 'win32'){
             ipcRenderer.send("download", {
                 url: "https://files.multimc.org/downloads/mmc-stable-win32.zip",
                 properties: {directory: app.getPath("userData")}
@@ -40,6 +54,14 @@ var App = {
     },
     import: function(){
         console.log("import")
+    },
+    processDownload: function(filename){
+        if(process.platform == 'darwin'){
+            App.state("OS X support for untar is under deveopment!")
+            console.log("OS X support for untar is under deveopment!")
+        }else if(process.platform == 'win32'){
+
+        }
     }
 }
 
@@ -49,7 +71,7 @@ App.changeButton(true, null, "Loading...")
 // Check for existing MultiMC instance in userData
 if(process.platform == 'darwin'){
     var mcpath = path.join(app.getPath("userData"), "MultiMC.app")
-}else{
+}else if(process.platform == 'win32'){
     var mcpath = path.join(app.getPath("userData"), "MultiMC")
 }
 
@@ -62,8 +84,10 @@ if (fs.existsSync(mcpath)) {
     App.changeButton(false, App.downloadmc, "Download New");
 }
 
-ipcRenderer.on("download complete", (event, file) => {
+ipcRenderer.on("download complete", (event, file, filename) => {
     App.state("Download finished! saved at: " + file)
+    App.processDownload(filename)
+    App.enableButtons()
 });
 
 ipcRenderer.on("download progress", (event, progress) => {

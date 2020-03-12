@@ -31,7 +31,7 @@ function createWindow () {
   ipcMain.on("download", (event, info) => {
     info.properties.onProgress = status => mainWindow.webContents.send("download progress", status);
     download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
-        .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath()));
+        .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath(), dl.getFilename()));
   });
 
   // Emitted when the window is closed.
