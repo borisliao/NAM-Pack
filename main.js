@@ -115,7 +115,7 @@ if(process.platform == 'darwin'){
 }
 
 // Add developer tools item if in test
-if(process.env.NODE_ENV !== 'test'){
+if(process.env.NODE_ENV == 'test'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
     submenu:[
