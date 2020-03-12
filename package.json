@@ -3,8 +3,13 @@
   "version": "0.0.1",
   "description": "A minecraft launcher for a custom mod pack",
   "main": "main.js",
+  "author": "Boris Liao",
+  "license": "BSD-2-Clause",
   "scripts": {
-    "start": "electron ."
+    "postinstall": "install-app-deps",
+    "start": "set NODE_ENV=test&& electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [
     "NAM",
@@ -13,11 +18,36 @@
     "not",
     "another"
   ],
-  "author": "Boris Liao",
-  "license": "BSD-2-Clause",
+  "build": {
+    "appId": "nampack",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "portable"
+    }
+  },
   "dependencies": {},
   "devDependencies": {
-    "electron": "^3.1.4"
+    "electron": "^3.1.4",
+    "electron-builder": "^22.4.1"
   },
   "repository": {
     "type": "git",
