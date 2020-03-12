@@ -22,8 +22,8 @@ function createWindow () {
   // Insert menu
   Menu.setApplicationMenu(mainMenu);
 
-  // Turn on dev tools if in production
-  if(process.env.NODE_ENV !== 'production'){
+  // Turn on dev tools if in test
+  if(process.env.NODE_ENV == 'test'){
     mainWindow.toggleDevTools()
   }
 
@@ -114,8 +114,8 @@ if(process.platform == 'darwin'){
   mainMenuTemplate.unshift({});
 }
 
-// Add developer tools item if in production
-if(process.env.NODE_ENV !== 'production'){
+// Add developer tools item if in test
+if(process.env.NODE_ENV !== 'test'){
   mainMenuTemplate.push({
     label: 'Developer Tools',
     submenu:[
