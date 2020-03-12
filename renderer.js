@@ -4,23 +4,43 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
 const app = require('electron').remote.app
+const fs = require('electron').remote.require('fs')
+var path = require('path');
 
 // Main internal API for the main window 
 var App = {
     close: function () {
         ipcRenderer.send('close');
     },
-    changeButton: function (state,action){
-        document.getElementById("main-button").disabled = state;
+    changeButton: function (disable,action,message){
+        document.getElementById("main-button").disabled = disable;
         document.getElementById("main-button").onclick = action;
+        document.getElementById("main-button").innerHTML = message;
     },
     state: function(message){
         document.getElementById("state").innerText = message
+    },
+    statebg: function(color){
+        document.getElementById("state").style = "background-color:" + color
+    },
+    downloadmc: function(){
+        console.log("download")
+    },
+    import: function(){
+        console.log("import")
     }
 }
 
 App.state("Loading...")
+App.changeButton(true, null, "Loading...")
 
-// Find MultiMC instance
-console.log(app.getAppPath())
-App.changeButton(false, App.close);
+// Check for existing MultiMC instance in userData
+var mcpath = path.join(app.getPath("userData"), "MultiMC")
+if (fs.existsSync(mcpath)) {
+    App.state("MultiMC instance found")
+    App.changeButton(false, App.close, "Close");
+  } else {
+    App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
+    App.statebg("lightblue")
+    App.changeButton(false, App.downloadmc, "Download New");
+}
