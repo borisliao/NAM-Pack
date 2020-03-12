@@ -20,6 +20,7 @@
   ],
   "build": {
     "appId": "nampack",
+    "productName": "NAM Pack",
     "dmg": {
       "contents": [
         {
