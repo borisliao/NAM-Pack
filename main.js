@@ -115,20 +115,20 @@ if(process.platform == 'darwin'){
 }
 
 // Add developer tools item if in test
-if(process.env.NODE_ENV == 'test'){
-  mainMenuTemplate.push({
-    label: 'Developer Tools',
-    submenu:[
-      {
-        label: "Toggle DevTools",
-        accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click(item, focusedWindow){
-          focusedWindow.toggleDevTools();
-        }
-      },
-      {
-        role: 'reload'
+// if(process.env.NODE_ENV == 'test'){
+mainMenuTemplate.push({
+  label: 'Developer Tools',
+  submenu:[
+    {
+      label: "Toggle DevTools",
+      accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+      click(item, focusedWindow){
+        focusedWindow.toggleDevTools();
       }
-    ]
-  })
-}
+    },
+    {
+      role: 'reload'
+    }
+  ]
+})
+// }
