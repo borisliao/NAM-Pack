@@ -7,7 +7,7 @@
   <body>
     <div id="title">
       <h1>Welcome to the NAM Pack Updater!</h1>
-      <i> NAM Pack Updater version <script>document.write(process.env.npm_package_version)</script></i>
+      <i> NAM Pack Updater version <script>const { remote } = require('electron');document.write(remote.app.getVersion())</script></i>
     </div>
     <div id="state"></div>
     <div class="update">
