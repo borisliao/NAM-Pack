@@ -10,8 +10,9 @@
       <i> NAM Pack Updater version <script>const { remote } = require('electron');document.write(remote.app.getVersion())</script></i>
     </div>
     <div id="state"></div>
-    <div class="update">
-      <button id="main-button" type="button" disabled=true> Update! </button>
+    <div class="button-options">
+      <button id="main-button" type="button" disabled=true> Starting Up </button>
+      <button id="import" type="button" disabled=true> Import Old MultiMC </button>
     </div>
     <script src="./renderer.js"></script>
   </body>
