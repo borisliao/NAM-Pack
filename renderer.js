@@ -31,20 +31,30 @@ var App = {
     },
     launch: function () {
         if(process.platform == 'darwin'){
-            child(path.join(maindir, "process", "MultiMC.app"), function(err, data){
+            var mc = child(path.join(maindir, "process", "MultiMC.app"),[], function(err, data){
                 if (err){
                     App.statebg("lightblue")
                     App.state("Error: could not launch MultiMC")
                     console.error(err);
                 }
             });
+            ipcRenderer.send("hide")
+            mc.on('exit', (code) => {
+                console.log(`child process exited with code ${code}`);
+                App.close()
+            });
         }else if(process.platform == 'win32'){
-            child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"), function(err, data){
+            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"),[], function(err, data){
                 if (err){
                     App.statebg("lightblue")
                     App.state("Error: could not launch MultiMC")
                     console.error(err);
                 }
+            });
+            ipcRenderer.send("hide")
+            mc.on('exit', (code) => {
+                console.log(`child process exited with code ${code}`);
+                App.close()
             });
         }
     },
@@ -147,3 +157,4 @@ ipcRenderer.on("download progress", (event, progress) => {
     const cleanProgressInPercentages = Math.floor(progress.percent * 100); // Without decimal point
     App.state("Downloading: " + cleanProgressInPercentages + '%')
 });
+

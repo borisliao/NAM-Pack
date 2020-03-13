@@ -75,6 +75,12 @@ ipcMain.on('credentials',function(e,item){
   loginWindow.close();
 })
 
+// Hide window function
+ipcMain.on('hide',function(){
+  mainWindow.hide();
+})
+
+
 // catch close call
 ipcMain.on('close',function(e){
   mainWindow.close();
