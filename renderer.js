@@ -9,6 +9,7 @@ var path = require('path');
 var extract = require('extract-zip');
 const {getCurrentWindow, globalShortcut} = require('electron').remote;
 var request = require('request');
+var child = require("child_process").execFile;
 
 var maindir = app.getPath("userData")
 // Main internal API for the main window 
@@ -27,6 +28,25 @@ var App = {
     },
     close: function () {
         ipcRenderer.send('close');
+    },
+    launch: function () {
+        if(process.platform == 'darwin'){
+            child(path.join(maindir, "process", "MultiMC.app"), function(err, data){
+                if (err){
+                    App.statebg("lightblue")
+                    App.state("Error: could not launch MultiMC")
+                    console.error(err);
+                }
+            });
+        }else if(process.platform == 'win32'){
+            child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"), function(err, data){
+                if (err){
+                    App.statebg("lightblue")
+                    App.state("Error: could not launch MultiMC")
+                    console.error(err);
+                }
+            });
+        }
     },
     changeButton: function (disable,action,message){
         document.getElementById("main-button").disabled = disable;
@@ -100,11 +120,17 @@ if(process.platform == 'darwin'){
 if (fs.existsSync(mcpath)) {
     App.state("MultiMC instance found")
     // Check for NAM pack update using github releses
+    var online_version
     var r = request.get('https://github.com/MultiMC/MultiMC5/releases/latest', function (err, res, body) {
         // extract the last numbers from the url
-        var version = r.uri.href.substring(r.uri.href.lastIndexOf("/") + 1)
+        online_version = r.uri.href.substring(r.uri.href.lastIndexOf("/") + 1)
+        // check current version of NAM Pack
+        if(fs.existsSync(path.join(mcpath, "instances", "NAM Pack"))){
+            console.log("NAM Pack exists")
+        }
+
     });
-    App.changeButton(false, App.close, "Close");
+    App.changeButton(false, App.launch, "Launch");
 } else {
     App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
     App.statebg("lightblue")
