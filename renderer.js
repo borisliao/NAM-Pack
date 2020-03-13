@@ -6,13 +6,15 @@ const {ipcRenderer} = electron;
 const app = require('electron').remote.app
 const fs = require('electron').remote.require('fs')
 var path = require('path');
+var extract = require('extract-zip');
+const {getCurrentWindow, globalShortcut} = require('electron').remote;
 
+var maindir = app.getPath("userData")
 // Main internal API for the main window 
 var App = {
     disableButtons: function(){
         buttons = document.getElementsByTagName("button")
         for(var i = 0; i < buttons.length; i++){
-            console.log(buttons[i])
             buttons[i].disabled = true
         }
     },
@@ -43,25 +45,42 @@ var App = {
         if(process.platform == 'darwin'){
             ipcRenderer.send("download", {
                 url: "https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz",
-                properties: {directory: app.getPath("userData")}
+                properties: {directory: maindir}
             });
         }else if(process.platform == 'win32'){
             ipcRenderer.send("download", {
                 url: "https://files.multimc.org/downloads/mmc-stable-win32.zip",
-                properties: {directory: app.getPath("userData")}
+                properties: {directory: maindir}
             });
         }
     },
     import: function(){
         console.log("import")
     },
-    processDownload: function(filename){
+    processDownload: function(pathname){
         if(process.platform == 'darwin'){
             App.state("OS X support for untar is under deveopment!")
             console.log("OS X support for untar is under deveopment!")
         }else if(process.platform == 'win32'){
-
+            extract(pathname,{dir: path.join(maindir, "process")},function (err){
+                if(err){
+                    App.statebg("lightblue")
+                    App.state("There was a error extracting the downloaded file\n" + err);
+                    console.log(err)
+                }
+            })
+            App.state("Finished extracting, restarting...")
         }
+        // Delete the original downloaded file
+        fs.unlinkSync(pathname, function (err) {
+            if (err) throw err;
+        });
+        App.reload()
+    },
+    reload: function(){
+        // if there is no error
+        if(!document.getElementById("state").innerText.search(/error/i))
+            getCurrentWindow().reload()
     }
 }
 
@@ -70,9 +89,9 @@ App.changeButton(true, null, "Loading...")
 
 // Check for existing MultiMC instance in userData
 if(process.platform == 'darwin'){
-    var mcpath = path.join(app.getPath("userData"), "MultiMC.app")
+    var mcpath = path.join(maindir, "process" ,"MultiMC.app")
 }else if(process.platform == 'win32'){
-    var mcpath = path.join(app.getPath("userData"), "MultiMC")
+    var mcpath = path.join(maindir, "process" ,"MultiMC")
 }
 
 if (fs.existsSync(mcpath)) {
@@ -84,9 +103,9 @@ if (fs.existsSync(mcpath)) {
     App.changeButton(false, App.downloadmc, "Download New");
 }
 
-ipcRenderer.on("download complete", (event, file, filename) => {
+ipcRenderer.on("download complete", (event, file) => {
     App.state("Download finished! saved at: " + file)
-    App.processDownload(filename)
+    App.processDownload(file)
     App.enableButtons()
 });
 
