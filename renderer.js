@@ -31,7 +31,7 @@ var App = {
     },
     launch: function () {
         if(process.platform == 'darwin'){
-            var mc = child(path.join(maindir, "process", "MultiMC.app"),[], function(err, data){
+            var mc = child(path.join(maindir, "process", "MultiMC.app"),["-l","1.15.2"], function(err, data){
                 if (err){
                     App.statebg("lightblue")
                     App.state("Error: could not launch MultiMC")
@@ -44,7 +44,7 @@ var App = {
                 App.close()
             });
         }else if(process.platform == 'win32'){
-            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"),[], function(err, data){
+            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"),["-l","1.15.2"], function(err, data){
                 if (err){
                     App.statebg("lightblue")
                     App.state("Error: could not launch MultiMC")
@@ -55,6 +55,37 @@ var App = {
             mc.on('exit', (code) => {
                 console.log(`child process exited with code ${code}`);
                 App.close()
+            });
+        }
+    },
+    launchNoArgs: function () {
+        if(process.platform == 'darwin'){
+            var mc = child(path.join(maindir, "process", "MultiMC.app"), function(err, data){
+                if (err){
+                    App.statebg("lightblue")
+                    App.state("Error: could not launch MultiMC normally")
+                    console.error(err);
+                }
+                
+            });
+            // TODO: fix stdout redirect
+            mc.stdout.on('data', function(data) {
+                App.statebg("lightblue")
+                App.statebg(data)
+                console.log(data)
+            });
+        }else if(process.platform == 'win32'){
+            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"), function(err, data){
+                if (err){
+                    App.statebg("lightblue")
+                    App.state("Error: could not launch MultiMC normally")
+                    console.error(err);
+                }
+            });
+            mc.stdout.on('data', function(data) {
+                App.statebg("lightblue")
+                App.statebg(data)
+                console.log(data)
             });
         }
     },
