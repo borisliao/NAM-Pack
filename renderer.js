@@ -150,7 +150,7 @@ if (fs.existsSync(mcpath)) {
 ipcRenderer.on("download complete", (event, file) => {
     App.state("Download finished! saved at: " + file)
     App.processDownload(file)
-    App.enableButtons()
+    // App.enableButtons()
 });
 
 ipcRenderer.on("download progress", (event, progress) => {
