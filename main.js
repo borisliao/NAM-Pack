@@ -4,6 +4,7 @@ const url = require('url');
 const path = require('path');
 const {download} = require("electron-dl");
 const fs = require("fs")
+const trash = require('trash');
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -96,20 +97,6 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-const deleteFolderRecursive = function(pathX) {
-  if (fs.existsSync(pathX)) {
-    fs.readdirSync(pathX).forEach((file, index) => {
-      const curPath = path.join(pathX, file);
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(pathX);
-  }
-};
-
 const mainMenuTemplate = [
   {
     label: "File",
@@ -125,12 +112,13 @@ const mainMenuTemplate = [
         click(){
           let options  = {
             buttons: ["Yes","Cancel"],
-            message: "Do you really want to delete MultiMC? You will lose all your settings. This is irreversible!"
+            message: "Do you really want to delete MultiMC? This sends your MultiMC to the trash!"
           }
           var cancel = dialog.showMessageBox(options)
           if(!cancel){
-            deleteFolderRecursive(path.join(app.getPath("userData"), "process"));
-            mainWindow.reload();
+            trash(path.join(app.getPath("userData"), "process")).then(function(){
+              mainWindow.reload();
+            })
           }
         }
       },
