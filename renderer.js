@@ -68,18 +68,18 @@ var App = {
                     App.state("There was a error extracting the downloaded file\n" + err);
                     console.log(err)
                 }
+                // Delete the original downloaded file
+                fs.unlinkSync(pathname, function (err) {
+                    if (err) throw err;
+                });
             })
             App.state("Finished extracting, restarting...")
         }
-        // Delete the original downloaded file
-        fs.unlinkSync(pathname, function (err) {
-            if (err) throw err;
-        });
         App.reload()
     },
     reload: function(){
         // if there is no error
-        if(!document.getElementById("state").innerText.search(/error/i))
+        if(document.getElementById("state").innerText.search(/error/i) == -1)
             getCurrentWindow().reload()
     }
 }
