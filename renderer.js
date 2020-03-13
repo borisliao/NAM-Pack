@@ -8,6 +8,7 @@ const fs = require('electron').remote.require('fs')
 var path = require('path');
 var extract = require('extract-zip');
 const {getCurrentWindow, globalShortcut} = require('electron').remote;
+var request = require('request');
 
 var maindir = app.getPath("userData")
 // Main internal API for the main window 
@@ -69,13 +70,15 @@ var App = {
                     console.log(err)
                 }
                 // Delete the original downloaded file
-                fs.unlinkSync(pathname, function (err) {
+                fs.unlink(pathname, function (err) {
                     if (err) throw err;
+                    // App reload here instead of outside of function to ensure synchronous runtime
+                    App.reload()
                 });
             })
             App.state("Finished extracting, restarting...")
         }
-        App.reload()
+        
     },
     reload: function(){
         // if there is no error
@@ -96,6 +99,11 @@ if(process.platform == 'darwin'){
 
 if (fs.existsSync(mcpath)) {
     App.state("MultiMC instance found")
+    // Check for NAM pack update using github releses
+    var r = request.get('https://github.com/MultiMC/MultiMC5/releases/latest', function (err, res, body) {
+        // extract the last numbers from the url
+        var version = r.uri.href.substring(r.uri.href.lastIndexOf("/") + 1)
+    });
     App.changeButton(false, App.close, "Close");
 } else {
     App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
