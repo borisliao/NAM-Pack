@@ -1,8 +1,9 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu, ipcMain} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 const url = require('url');
 const path = require('path');
 const {download} = require("electron-dl");
+const fs = require("fs")
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -31,7 +32,7 @@ function createWindow () {
   ipcMain.on("download", (event, info) => {
     info.properties.onProgress = status => mainWindow.webContents.send("download progress", status);
     download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
-        .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath(), dl.getFilename()));
+        .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath()));
   });
 
   // Emitted when the window is closed.
@@ -95,6 +96,20 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+const deleteFolderRecursive = function(pathX) {
+  if (fs.existsSync(pathX)) {
+    fs.readdirSync(pathX).forEach((file, index) => {
+      const curPath = path.join(pathX, file);
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(pathX);
+  }
+};
+
 const mainMenuTemplate = [
   {
     label: "File",
@@ -103,6 +118,20 @@ const mainMenuTemplate = [
         label:'Login',
         click(){
           logWindow();
+        }
+      },
+      {
+        label:'Delete MultiMC folder',
+        click(){
+          let options  = {
+            buttons: ["Yes","Cancel"],
+            message: "Do you really want to delete MultiMC? You will lose all your settings. This is irreversible!"
+          }
+          var cancel = dialog.showMessageBox(options)
+          if(!cancel){
+            deleteFolderRecursive(path.join(app.getPath("userData"), "process"));
+            mainWindow.reload();
+          }
         }
       },
       {
