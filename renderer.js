@@ -117,7 +117,7 @@ var App = {
         }
     },
     import: function(){
-        console.log("import")
+        App.state("Import not implemented yet")
     },
     processDownload: function(pathname){
         if(process.platform == 'darwin'){
