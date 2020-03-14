@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, dialog, shell} = require('electron')
 const url = require('url');
 const path = require('path');
 const {download} = require("electron-dl");
@@ -162,6 +162,18 @@ const mainMenuTemplate = [
               mainWindow.reload();
             })
           }
+        }
+      },
+      {
+        label:'Launch MultiMC normally',
+        click(){
+          mainWindow.webContents.executeJavaScript('App.launchNoArgs()');
+        }
+      },
+      {
+        label:'Open process folder',
+        click(){
+          shell.openItem(path.join(app.getPath("userData"), "process"))
         }
       },
       {
