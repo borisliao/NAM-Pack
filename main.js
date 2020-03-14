@@ -5,6 +5,7 @@ const path = require('path');
 const {download} = require("electron-dl");
 const fs = require("fs")
 const trash = require('trash');
+const {autoUpdater} = require("electron-updater");
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -35,7 +36,6 @@ function createWindow () {
     download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
         .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath()));
   });
-
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -45,6 +45,36 @@ function createWindow () {
     app.quit();
   })
 }
+
+function sendStatusToWindow(text) {
+  mainWindow.webContents.executeJavaScript('App.updateInfo("'+text+'")');
+}
+
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+})
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available.');
+})
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('You are up to date.');
+  mainWindow.send("latest");
+})
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow('Error in auto-updater. You might not be up to date. Check console for more details.');
+  mainWindow.webContents.executeJavaScript('console.error("'+err+'")');
+  mainWindow.send("latest");
+})
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  sendStatusToWindow(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('Update downloaded, installing...');
+  autoUpdater.quitAndInstall();
+});
 
 function logWindow () {
   // Create the browser window.
@@ -80,6 +110,10 @@ ipcMain.on('hide',function(){
   mainWindow.hide();
 })
 
+// Check for updates
+ipcMain.on('checkUpdate',function(){
+  autoUpdater.checkForUpdates();
+})
 
 // catch close call
 ipcMain.on('close',function(e){
@@ -89,7 +123,9 @@ ipcMain.on('close',function(e){
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', function(){
+  createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

@@ -97,6 +97,12 @@ var App = {
     state: function(message){
         document.getElementById("state").innerText = message
     },
+    updateInfo: function(message){
+        document.getElementById("update").innerText = message
+    },
+    update: function(){
+        ipcRenderer.send("checkUpdate");
+    },
     statebg: function(color){
         document.getElementById("state").style = "background-color:" + color
     },
@@ -151,41 +157,45 @@ var App = {
 App.state("Loading...")
 App.changeButton(true, null, "Loading...")
 
-// Check for existing MultiMC instance in userData
-if(process.platform == 'darwin'){
-    var mcpath = path.join(maindir, "process" ,"MultiMC.app")
-}else if(process.platform == 'win32'){
-    var mcpath = path.join(maindir, "process" ,"MultiMC")
-}
+// Check for application update
+App.update()
 
-if (fs.existsSync(mcpath)) {
-    App.state("MultiMC instance found")
-    // Check for NAM pack update using github releses
-    var online_version
-    var r = request.get('https://github.com/MultiMC/MultiMC5/releases/latest', function (err, res, body) {
-        // extract the last numbers from the url
-        online_version = r.uri.href.substring(r.uri.href.lastIndexOf("/") + 1)
-        // check current version of NAM Pack
-        if(fs.existsSync(path.join(mcpath, "instances", "NAM Pack"))){
-            console.log("NAM Pack exists")
-        }
+ipcRenderer.on("latest", (event, file) => {
+    // Check for existing MultiMC instance in userData
+    if(process.platform == 'darwin'){
+        var mcpath = path.join(maindir, "process" ,"MultiMC.app")
+    }else if(process.platform == 'win32'){
+        var mcpath = path.join(maindir, "process" ,"MultiMC")
+    }
 
+    if (fs.existsSync(mcpath)) {
+        App.state("MultiMC instance found")
+        // Check for NAM pack update using github releses
+        var online_version
+        var r = request.get('https://github.com/MultiMC/MultiMC5/releases/latest', function (err, res, body) {
+            // extract the last numbers from the url
+            online_version = r.uri.href.substring(r.uri.href.lastIndexOf("/") + 1)
+            // check current version of NAM Pack
+            if(fs.existsSync(path.join(mcpath, "instances", "NAM Pack"))){
+                console.log("NAM Pack exists")
+            }
+
+        });
+        App.changeButton(false, App.launch, "Launch");
+    } else {
+        App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
+        App.statebg("lightblue")
+        App.changeButton(false, App.downloadmc, "Download New");
+    }
+
+    ipcRenderer.on("download complete", (event, file) => {
+        App.state("Download finished! saved at: " + file)
+        App.processDownload(file)
+        // App.enableButtons()
     });
-    App.changeButton(false, App.launch, "Launch");
-} else {
-    App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
-    App.statebg("lightblue")
-    App.changeButton(false, App.downloadmc, "Download New");
-}
 
-ipcRenderer.on("download complete", (event, file) => {
-    App.state("Download finished! saved at: " + file)
-    App.processDownload(file)
-    // App.enableButtons()
+    ipcRenderer.on("download progress", (event, progress) => {
+        const cleanProgressInPercentages = Math.floor(progress.percent * 100); // Without decimal point
+        App.state("Downloading: " + cleanProgressInPercentages + '%')
+    });
 });
-
-ipcRenderer.on("download progress", (event, progress) => {
-    const cleanProgressInPercentages = Math.floor(progress.percent * 100); // Without decimal point
-    App.state("Downloading: " + cleanProgressInPercentages + '%')
-});
-
