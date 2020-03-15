@@ -64,6 +64,7 @@
     "electron-dl": "^3.0.0",
     "electron-updater": "^4.2.5",
     "extract-zip": "^1.6.7",
+    "fs-extra": "^8.1.0",
     "request": "^2.88.2",
     "trash": "^6.1.1"
   },
