@@ -31,7 +31,7 @@ var App = {
     },
     launch: function () {
         if(process.platform == 'darwin'){
-            var mc = child(path.join(maindir, "process", "MultiMC.app"),["-l","1.15.2"], function(err, data){
+            var mc = child(path.join(maindir, "process", "MultiMC.app"),["-l","NAM Pack"], function(err, data){
                 if (err){
                     App.statebg("lightblue")
                     App.state("Error: could not launch MultiMC")
@@ -44,7 +44,7 @@ var App = {
                 App.close()
             });
         }else if(process.platform == 'win32'){
-            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"),["-l","1.15.2"], function(err, data){
+            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"),["-l","NAM Pack"], function(err, data){
                 if (err){
                     App.statebg("lightblue")
                     App.state("Error: could not launch MultiMC")
@@ -172,16 +172,28 @@ ipcRenderer.on("latest", (event, file) => {
         App.state("MultiMC instance found")
         // Check for NAM pack update using github releses
         var online_version
-        var r = request.get('https://github.com/MultiMC/MultiMC5/releases/latest', function (err, res, body) {
+        var r = request.get('https://github.com/borisliao/nam-dist/releases/latest', function (err, res, body) {
             // extract the last numbers from the url
             online_version = r.uri.href.substring(r.uri.href.lastIndexOf("/") + 1)
             // check current version of NAM Pack
-            if(fs.existsSync(path.join(mcpath, "instances", "NAM Pack"))){
+            var instancePath = path.join(mcpath, "instances", "NAM Pack")
+            if(fs.existsSync(path.join(mcpath, "instances", "NAM Pack","minecraft"))){
                 console.log("NAM Pack exists")
+                var man = require(path.join(instancePath,"manifest.json"))
+                if(online_version > man.version){
+                    // Download the latest dist of NAM pack
+                    App.state("Updating NAM Pack to: " + online_version)
+                    ipcRenderer.send("newpack");
+                }else{
+                    App.state("NAM Pack release: " + man.version)
+                    App.changeButton(false, App.launch, "Launch");
+                }
+            }else{
+                App.state("Downloading NAM Pack")
+                ipcRenderer.send("newpack");
             }
 
         });
-        App.changeButton(false, App.launch, "Launch");
     } else {
         App.state('MultiMC does not exist.\nWould you like to download a new MultiMC or import a old MultiMC instance?')
         App.statebg("lightblue")
@@ -191,6 +203,12 @@ ipcRenderer.on("latest", (event, file) => {
     ipcRenderer.on("download complete", (event, file) => {
         App.state("Download finished! saved at: " + file)
         App.processDownload(file)
+        // App.enableButtons()
+    });
+
+    ipcRenderer.on("modpack complete", (event, file) => {
+        App.state("Download finished! saved at: " + file)
+        App.processModpack(file)
         // App.enableButtons()
     });
 

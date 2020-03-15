@@ -6,7 +6,9 @@ const {download} = require("electron-dl");
 const fs = require("fs")
 const trash = require('trash');
 const {autoUpdater} = require("electron-updater");
-
+var extract = require('extract-zip');
+var request = require('request');
+const fse = require('fs-extra')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -97,6 +99,74 @@ function logWindow () {
     loginWindow = null
   })
 }
+
+function getFilenameFromUrl(url){
+  return url.substring(url.lastIndexOf('/') + 1);
+}
+var callTimes = 0;
+
+
+// download and process a new pack
+ipcMain.on('newpack',function(){
+  var modpackDir = path.join(app.getPath("userData"), "process", "MultiMC", "instances", "NAM Pack")
+
+  // Download twitch pack
+  var info = {
+    url: "https://github.com/borisliao/nam-dist/releases/latest/download/NAM-pack.zip",
+    properties: {directory: modpackDir}
+  };
+  var nam_download = download(BrowserWindow.getFocusedWindow(), info.url, info.properties);
+  nam_download.then(dl => extract(path.join(modpackDir,"NAM-Pack.zip"),{dir: modpackDir},function (err){
+      if(err){
+          console.log(err);
+      }
+      // Delete the original downloaded file
+      fs.unlink(path.join(modpackDir,"NAM-Pack.zip"), function (err) {
+          if (err) throw err;
+        });
+      // Delete original mods folder and rebuild from manifest.json
+      if(fs.existsSync(path.join(modpackDir,"minecraft","mods"))){
+        fs.unlink(path.join(modpackDir,"minecraft","mods"),function(err){console.error(err)});
+      }
+      // Delete overrides folder
+      if(fs.existsSync(path.join(modpackDir,"overrides"))){
+        fs.unlink(path.join(modpackDir,"overrides"),function(err){console.error(err)});
+      }
+
+      if (!fs.existsSync(path.join(modpackDir,"minecraft"))){
+        fs.mkdirSync(path.join(modpackDir,"minecraft"));
+        fs.mkdirSync(path.join(modpackDir,"minecraft","mods"));
+      }
+      var man = require(path.join(modpackDir,"manifest.json"));
+
+      for(var i in man.files){
+          projectID = man.files[i].projectID;
+          fileID = man.files[i].fileID;
+          var r = request.get('https://addons-ecs.forgesvc.net/api/v2/addon/'+projectID+'/file/'+fileID+'/download-url', function (err, res, body) {
+            request.get(body).pipe(fs.createWriteStream(path.join(modpackDir,"minecraft","mods",getFilenameFromUrl(body)))).on('finish', function(){
+                callTimes+=1
+                mainWindow.webContents.executeJavaScript('App.state('+ callTimes.toString() +'/'+ man.files.length +')');
+                if(callTimes == man.files.length){
+                  mainWindow.webContents.executeJavaScript('App.state("mod download finished!")');
+                  // Copy overrides folder
+                  var mc_folder = path.join(modpackDir,"minecraft");
+                  var sourceDir = path.join(modpackDir, "overrides");
+                  var destinationDir = mc_folder;
+                  fse.copy(sourceDir, destinationDir, function (err) {
+                    if (err) {
+                      throw err;
+                    } else {
+                      console.log("success!");
+                      mainWindow.webContents.executeJavaScript('App.changeButton(false, App.launch, "Launch")');
+                    }
+                  }); 
+                }
+            });
+        });
+      }
+    }));
+});
+
 
 // catch credentials
 ipcMain.on('credentials',function(e,item){
