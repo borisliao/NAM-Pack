@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "electron-dl": "^3.0.0",
+    "electron-download-manager": "^2.1.2",
     "electron-updater": "^4.2.5",
     "extract-zip": "^1.6.7",
     "request": "^2.88.2",
