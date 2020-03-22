@@ -247,12 +247,6 @@ const mainMenuTemplate = [
         }
       },
       {
-        label:'Launch MultiMC normally',
-        click(){
-          mainWindow.webContents.executeJavaScript('App.launchNoArgs()');
-        }
-      },
-      {
         label:'Quit',
         accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
         click(){
