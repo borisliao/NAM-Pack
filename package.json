@@ -1,7 +1,7 @@
 {
   "name": "nam-pack-launcher",
   "productName": "NAM Pack",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A minecraft launcher for a custom mod pack",
   "main": "main.js",
   "author": "Boris Liao",
