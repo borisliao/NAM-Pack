@@ -105,6 +105,20 @@ function getFilenameFromUrl(url){
 }
 var callTimes = 0;
 
+ipcMain.on('vanillaNewpack',function(){
+  var modpackDir = path.join(app.getPath("userData"), "process", "MultiMC", "instances")
+  var info = {
+    url: "https://github.com/borisliao/nam-dist/releases/latest/download/vanilla.zip",
+    properties: {directory: modpackDir}
+  };
+  console.log("Dl")
+  var vanilla_dl = download(BrowserWindow.getFocusedWindow(), info.url, info.properties);
+  vanilla_dl.then(dl => extract(path.join(modpackDir,"vanilla.zip"),{dir: modpackDir},function (err){
+    if(err){
+        console.log(err);
+    }
+  }));
+});
 
 // download and process a new pack
 ipcMain.on('newpack',function(){
