@@ -1,0 +1,5 @@
+class ProcessManifest{
+    constructor (path){
+        
+    }
+}
