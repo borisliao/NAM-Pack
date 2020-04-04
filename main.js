@@ -1,4 +1,3 @@
-// Modules to control application life and create native browser window
 const {app, BrowserWindow, Menu, ipcMain, dialog, shell} = require('electron')
 const url = require('url');
 const path = require('path');
@@ -10,20 +9,13 @@ var extract = require('extract-zip');
 var request = require('request');
 const fse = require('fs-extra')
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let loginWindow;
 
 function createWindow () {
-  // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
-
-  // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
-  // mainWindow.setMenu(null);
-  // Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   // Insert menu
   Menu.setApplicationMenu(mainMenu);
@@ -38,12 +30,10 @@ function createWindow () {
     download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
         .then(dl => mainWindow.webContents.send("download complete", dl.getSavePath()));
   });
-  // Emitted when the window is closed.
+
   mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
+    mainWindow = null;
+    loginWindow = null;
     app.quit();
   })
 }
@@ -79,24 +69,14 @@ autoUpdater.on('update-downloaded', (info) => {
 });
 
 function logWindow () {
-  // Create the browser window.
   loginWindow = new BrowserWindow({width: 400, height: 200})
-
-  // and load the login.html of the app.
   loginWindow.loadFile('login.html')
 
-  // loginWindow.setMenu(null);
-  // Build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  // Insert menu
   Menu.setApplicationMenu(mainMenu);
 
-  // Emitted when the window is closed.
   loginWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    loginWindow = null
+    loginWindow = null;
   })
 }
 
@@ -190,9 +170,6 @@ ipcMain.on('close',function(e){
   mainWindow.close();
 })
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', function(){
   createWindow();
 });
@@ -205,9 +182,6 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
     createWindow()
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
 
 const mainMenuTemplate = [
   {
@@ -262,8 +236,7 @@ if(process.platform == 'darwin'){
   mainMenuTemplate.unshift({});
 }
 
-// Add developer tools item if in test
-// if(process.env.NODE_ENV == 'test'){
+// Add developer tools
 mainMenuTemplate.push({
   label: 'Developer Tools',
   submenu:[
@@ -279,4 +252,3 @@ mainMenuTemplate.push({
     }
   ]
 })
-// }
