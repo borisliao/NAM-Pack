@@ -10,7 +10,7 @@ var extract = require('extract-zip');
 const {getCurrentWindow, globalShortcut} = require('electron').remote;
 var request = require('request');
 var child = require("child_process").execFile;
-
+var online_version
 var maindir = app.getPath("userData")
 // Main internal API for the main window 
 var App = {
@@ -89,6 +89,36 @@ var App = {
             });
         }
     },
+    launchVanilla: function () {
+        if(process.platform == 'darwin'){
+            var mc = child(path.join(maindir, "process", "MultiMC.app"),["-l","Vanilla"], function(err, data){
+                if (err){
+                    App.statebg("lightblue")
+                    App.state("Error: could not launch MultiMC")
+                    console.error(err);
+                }
+            });
+            ipcRenderer.send("hide")
+            mc.on('exit', (code) => {
+                console.log(`child process exited with code ${code}`);
+                App.close()
+            });
+        }else if(process.platform == 'win32'){
+            var mc = child(path.join(maindir, "process", "MultiMC", "MultiMC.exe"),["-l","Vanilla"], function(err, data){
+                if (err){
+                    App.statebg("lightblue")
+                    App.state("Error: could not launch MultiMC")
+                    console.error(err);
+                }
+            });
+            ipcRenderer.send("hide")
+            mc.on('exit', (code) => {
+                console.log(`child process exited with code ${code}`);
+                App.close()
+            });
+        }
+    },
+
     changeButton: function (disable,action,message){
         document.getElementById("main-button").disabled = disable;
         document.getElementById("main-button").onclick = action;
@@ -151,6 +181,30 @@ var App = {
         // if there is no error
         if(document.getElementById("state").innerText.search(/error/i) == -1)
             getCurrentWindow().reload()
+    },
+    vanilla: function(){
+        if(process.platform == 'darwin'){
+            var mcpath = path.join(maindir, "process" ,"MultiMC.app")
+        }else if(process.platform == 'win32'){
+            var mcpath = path.join(maindir, "process" ,"MultiMC")
+        }
+        if(fs.existsSync(path.join(mcpath, "instances", "Vanilla"))){
+            console.log("Vanilla exists")
+            var instancePath = path.join(mcpath, "instances", "Vanilla")
+            var man = require(path.join(instancePath,"manifest.json"))
+            if(online_version > man.version){
+                // Download the latest dist of Vanilla
+                App.state("Updating Vanilla to: " + online_version)
+                ipcRenderer.send("vanillaNewpack");
+            }else{
+                App.state("Vanilla release: " + man.version)
+                App.changeButton(false, App.launch, "Launch");
+            }
+        }else{
+            App.state("Downloading Vanilla")
+            ipcRenderer.send("vanillaNewpack");
+        }
+        document.getElementById("vanilla").onclick = App.launchVanilla
     }
 }
 
