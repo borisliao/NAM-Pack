@@ -108,6 +108,10 @@ autoUpdater.on('update-downloaded', (info) => {
   autoUpdater.quitAndInstall();
 });
 
+//-----------------------------------------------------------
+// Node.js ipc backend tasks
+//-----------------------------------------------------------
+
 var callTimes = 0;
 
 ipcMain.on('vanillaNewpack',function(){
