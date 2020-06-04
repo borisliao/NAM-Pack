@@ -1,5 +1,4 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog, shell} = require('electron')
-const url = require('url');
 const path = require('path');
 const {download} = require("electron-dl");
 const fs = require("fs")
