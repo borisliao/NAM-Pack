@@ -12,7 +12,6 @@ const fse = require('fs-extra');
 //-----------------------------------------------------------
 
 let mainWindow;
-let loginWindow;
 
 function createWindow () {
   mainWindow = new BrowserWindow({width: 800, height: 600});
@@ -36,20 +35,7 @@ function createWindow () {
 
   mainWindow.on('closed', function () {
     mainWindow = null;
-    loginWindow = null;
     app.quit();
-  });
-}
-
-function logWindow () {
-  loginWindow = new BrowserWindow({width: 400, height: 200});
-  loginWindow.loadFile('login.html');
-
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  Menu.setApplicationMenu(mainMenu);
-
-  loginWindow.on('closed', function () {
-    loginWindow = null;
   });
 }
 
@@ -188,14 +174,6 @@ ipcMain.on('newpack',function(){
         });
       }
     }));
-});
-
-
-// catch credentials
-ipcMain.on('credentials',function(e,item){
-  console.log(item);
-  mainWindow.webContents.send('credentials', item);
-  loginWindow.close();
 });
 
 // Hide window function

@@ -7,12 +7,6 @@ const mainMenuTemplate = [
     label: "File",
     submenu:[
       {
-        label:'Login',
-        click(){
-          logWindow();
-        }
-      },
-      {
         label:'Delete MultiMC folder',
         click(){
           let options  = {
