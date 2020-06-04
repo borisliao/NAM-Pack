@@ -7,6 +7,10 @@ var extract = require('extract-zip');
 var request = require('request');
 const fse = require('fs-extra');
 
+//-----------------------------------------------------------
+// Electron Window Process
+//-----------------------------------------------------------
+
 let mainWindow;
 let loginWindow;
 
@@ -36,6 +40,31 @@ function createWindow () {
     app.quit();
   });
 }
+
+function logWindow () {
+  loginWindow = new BrowserWindow({width: 400, height: 200});
+  loginWindow.loadFile('login.html');
+
+  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  Menu.setApplicationMenu(mainMenu);
+
+  loginWindow.on('closed', function () {
+    loginWindow = null;
+  });
+}
+
+app.on('ready', function(){
+  createWindow();
+});
+
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+    app.quit();
+});
+
+app.on('activate', function () {
+    createWindow();
+});
 
 //-----------------------------------------------------------
 // Macro functions
@@ -78,18 +107,6 @@ autoUpdater.on('update-downloaded', (info) => {
   sendStatusToWindow('Update downloaded, installing...');
   autoUpdater.quitAndInstall();
 });
-
-function logWindow () {
-  loginWindow = new BrowserWindow({width: 400, height: 200});
-  loginWindow.loadFile('login.html');
-
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  Menu.setApplicationMenu(mainMenu);
-
-  loginWindow.on('closed', function () {
-    loginWindow = null;
-  });
-}
 
 var callTimes = 0;
 
@@ -190,17 +207,4 @@ ipcMain.on('checkUpdate',function(){
 // catch close call
 ipcMain.on('close',function(e){
   mainWindow.close();
-});
-
-app.on('ready', function(){
-  createWindow();
-});
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-    app.quit();
-});
-
-app.on('activate', function () {
-    createWindow();
 });
