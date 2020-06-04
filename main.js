@@ -37,8 +37,16 @@ function createWindow () {
   });
 }
 
+//-----------------------------------------------------------
+// Macro functions
+//-----------------------------------------------------------
+
 function sendStatusToWindow(text) {
   mainWindow.webContents.executeJavaScript('App.updateInfo("'+text+'")');
+}
+
+function getFilenameFromUrl(url){
+  return url.substring(url.lastIndexOf('/') + 1);
 }
 
 //-----------------------------------------------------------
@@ -83,9 +91,6 @@ function logWindow () {
   });
 }
 
-function getFilenameFromUrl(url){
-  return url.substring(url.lastIndexOf('/') + 1);
-}
 var callTimes = 0;
 
 ipcMain.on('vanillaNewpack',function(){
