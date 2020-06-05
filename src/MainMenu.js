@@ -9,7 +9,10 @@ var request = require('request');
 var child = require("child_process").execFile;
 var online_version;
 var maindir = app.getPath("userData");
-// Main internal API for the main window 
+
+//-----------------------------------------------------------
+// Main App API (to be migrated to /src/)
+//-----------------------------------------------------------
 var App = {
     disableButtons: function(){
         buttons = document.getElementsByTagName("button");
