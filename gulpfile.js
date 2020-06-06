@@ -4,7 +4,7 @@ const babel = require('gulp-babel');
 const css = require('gulp-clean-css');
 // 1. Copy the index.html as is
 gulp.task('html', () => {
-    return gulp.src('./index.html')
+    return gulp.src('./src/index.html')
         .pipe(gulp.dest('app/'));
 });
 // 2. Compile CSS file and move them to the app folder
