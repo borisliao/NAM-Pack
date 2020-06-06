@@ -108,3 +108,6 @@ dist
 
 # Internal reference dev folder
 referencelibraries
+
+# Compiled jsx code
+app/
