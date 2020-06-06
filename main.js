@@ -15,6 +15,8 @@ const fse = require('fs-extra');
 let mainWindow;
 
 function createWindow () {
+  // Add react dev tools (from local google-chrome installation)
+  BrowserWindow.addDevToolsExtension(process.env.LOCALAPPDATA+'\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.7.0_0');
   mainWindow = new BrowserWindow({width: 800, height: 600});
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
