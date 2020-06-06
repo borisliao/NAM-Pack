@@ -3,7 +3,7 @@
   "productName": "NAM Pack",
   "version": "0.0.4",
   "description": "A minecraft launcher for a custom mod pack",
-  "main": "main.js",
+  "main": "app/main.js",
   "author": "Boris Liao",
   "license": "BSD-2-Clause",
   "scripts": {
