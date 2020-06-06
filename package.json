@@ -8,7 +8,7 @@
   "license": "BSD-2-Clause",
   "scripts": {
     "postinstall": "install-app-deps",
-    "start": "set NODE_ENV=test&& electron .",
+    "start": "set NODE_ENV=test&& gulp start",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "publish": "electron-builder -p always"
