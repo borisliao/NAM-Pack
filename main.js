@@ -1,4 +1,5 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog, shell} = require('electron');
+const url = require('url');
 const path = require('path');
 const {download} = require("electron-dl");
 const fs = require("fs");
@@ -15,9 +16,13 @@ let mainWindow;
 
 function createWindow () {
   mainWindow = new BrowserWindow({width: 800, height: 600});
-  mainWindow.loadFile('index.html');
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
   
-  let mainMenuToolbar = require("./src/modules/MainMenuToolbar.js");
+  let mainMenuToolbar = require("./modules/MainMenuToolbar.js");
   const mainMenu = Menu.buildFromTemplate(mainMenuToolbar);
   // Insert menu
   Menu.setApplicationMenu(mainMenu);
