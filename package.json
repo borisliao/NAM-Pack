@@ -11,7 +11,8 @@
     "start": "set NODE_ENV=test&& gulp start",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "publish": "electron-builder -p always"
+    "publish": "electron-builder -p always",
+    "release": "gulp release"
   },
   "keywords": [
     "NAM",
@@ -58,16 +59,21 @@
     },
     "nsis": {
       "deleteAppDataOnUninstall": true
-    }
+    },
+    "files": [
+      "app/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
   },
   "dependencies": {
-    "ajv": "^6.12.0",
-    "bootstrap": "^4.4.1",
+    "ajv": "^6.12.2",
+    "bootstrap": "^4.5.0",
     "electron-dl": "^3.0.0",
-    "electron-updater": "^4.2.5",
+    "electron-updater": "^4.3.1",
     "extract-zip": "^1.6.7",
     "fs-extra": "^8.1.0",
-    "jquery": "^3.5.0",
+    "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -79,7 +85,7 @@
     "@babel/preset-env": "^7.10.2",
     "@babel/preset-react": "^7.10.1",
     "electron": "^3.1.4",
-    "electron-builder": "^22.4.1",
+    "electron-builder": "^22.7.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.3.0",

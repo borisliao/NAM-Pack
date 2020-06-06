@@ -25,3 +25,11 @@ gulp.task('start', gulp.series('html', 'css', 'js', () => { // 4.
         __dirname+'/node_modules/.bin/electron .'
     ).on('close', () => process.exit());
 }));
+
+gulp.task('build', gulp.series('html', 'css', 'js'));
+
+gulp.task('release', gulp.series('build', () => {
+    return exec(
+        __dirname+'/node_modules/.bin/electron-builder .'
+    ).on('close', () => process.exit());
+}));
