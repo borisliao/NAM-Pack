@@ -14,6 +14,8 @@ const fse = require('fs-extra');
 
 let mainWindow;
 
+module.exports = app;
+
 function createWindow () {
   mainWindow = new BrowserWindow({width: 800, height: 600});
   mainWindow.loadURL(url.format({
