@@ -212,11 +212,11 @@ var App = {
 // Initiation of App
 //-----------------------------------------------------------
 
-App.state("Loading...");
-App.changeButton(true, null, "Loading...");
+// App.state("Loading...");
+// App.changeButton(true, null, "Loading...");
 
-// Check for application update
-App.update();
+// // Check for application update
+// App.update();
 
 ipcRenderer.on("latest", (event, file) => {
     // Check for existing MultiMC instance in userData
