@@ -11,7 +11,7 @@ class StateAPI {
     this._status = 'Initial Status'
     this._subscribeStatusFunct = []
 
-    this._selectedInstance = null
+    this._instance = null
     this._subscribeInstanceFunct = []
   }
 
@@ -39,7 +39,7 @@ class StateAPI {
   }
 
   unsubscribeStatus (funct) {
-    this._subscribeStatusFunct = this._subscribeStatusFunct.filter(functArrayElem => !(funct))
+    this._subscribeStatusFunct = this._subscribeStatusFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get instance () {
@@ -54,11 +54,11 @@ class StateAPI {
   }
 
   subscribeInstance (funct) {
-    this._subscribeInstanceFunct = funct
+    this._subscribeInstanceFunct.push(funct)
   }
 
   unsubscribeInstance (funct) {
-    this._subscribeInstanceFunct = this._subscribeInstanceFunct.filter(functArrayElem => !(funct))
+    this._subscribeInstanceFunct = this._subscribeInstanceFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 }
 
