@@ -100,6 +100,7 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-livereload": "^4.0.2",
+    "jest": "^26.0.1",
     "typescript": "^3.9.5"
   },
   "repository": {
