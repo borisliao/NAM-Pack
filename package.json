@@ -12,7 +12,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "publish": "electron-builder -p always",
-    "release": "gulp release"
+    "release": "gulp release",
+    "test": "jest"
   },
   "keywords": [
     "NAM",
