@@ -11,7 +11,7 @@ var online_version
 var maindir = app.getPath('userData')
 
 // -----------------------------------------------------------
-// Main App API (to be migrated to /src/)
+// Main App API (to be migrated to /src/StateAPI.js)
 // -----------------------------------------------------------
 var App = {
   disableButtons: function () {
