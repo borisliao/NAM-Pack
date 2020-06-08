@@ -1,44 +1,44 @@
-const trash = require('trash');
+const trash = require('trash')
 const app = require('../../main.js')
-//-----------------------------------------------------------
+// -----------------------------------------------------------
 // Electron Menu
-//-----------------------------------------------------------
+// -----------------------------------------------------------
 const mainMenuTemplate = [
   {
-    label: "File",
-    submenu:[
+    label: 'File',
+    submenu: [
       {
-        label:'Delete MultiMC folder',
-        click(){
-          let options  = {
-            buttons: ["Yes","Cancel"],
-            message: "Do you really want to delete MultiMC? This sends your MultiMC to the trash!"
-          };
-          var cancel = dialog.showMessageBox(options);
-          if(!cancel){
-            trash(path.join(app.getPath("userData"), "process")).then(function(){
-              mainWindow.reload();
-            });
+        label: 'Delete MultiMC folder',
+        click () {
+          const options = {
+            buttons: ['Yes', 'Cancel'],
+            message: 'Do you really want to delete MultiMC? This sends your MultiMC to the trash!'
+          }
+          var cancel = dialog.showMessageBox(options)
+          if (!cancel) {
+            trash(path.join(app.getPath('userData'), 'process')).then(function () {
+              mainWindow.reload()
+            })
           }
         }
       },
       {
-        label:'Launch MultiMC normally',
-        click(){
-          mainWindow.webContents.executeJavaScript('App.launchNoArgs()');
+        label: 'Launch MultiMC normally',
+        click () {
+          mainWindow.webContents.executeJavaScript('App.launchNoArgs()')
         }
       },
       {
-        label:'Open process folder',
-        click(){
-          shell.openItem(path.join(app.getPath("userData"), "process"));
+        label: 'Open process folder',
+        click () {
+          shell.openItem(path.join(app.getPath('userData'), 'process'))
         }
       },
       {
-        label:'Quit',
+        label: 'Quit',
         accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-        click(){
-          app.quit();
+        click () {
+          app.quit()
         }
       }
     ]
@@ -46,12 +46,12 @@ const mainMenuTemplate = [
   // Add developer tools
   {
     label: 'Developer Tools',
-    submenu:[
+    submenu: [
       {
-        label: "Toggle DevTools",
+        label: 'Toggle DevTools',
         accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click(item, focusedWindow){
-          focusedWindow.toggleDevTools();
+        click (item, focusedWindow) {
+          focusedWindow.toggleDevTools()
         }
       },
       {
@@ -59,11 +59,11 @@ const mainMenuTemplate = [
       }
     ]
   }
-];
+]
 
 // If on a mac, add a empty object on the menu
-if(process.platform == 'darwin'){
-  mainMenuTemplate.unshift({});
+if (process.platform == 'darwin') {
+  mainMenuTemplate.unshift({})
 }
 
-module.exports = mainMenuTemplate;
+module.exports = mainMenuTemplate
