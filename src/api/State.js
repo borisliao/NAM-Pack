@@ -4,60 +4,62 @@
 // Provides subscribers to frontend ./gui
 // -----------------------------------------------------------
 
-export default class StateAPI {
+class StateAPI {
   constructor () {
-    this.loading = true
+    this._loading = true
 
-    this.status = 'Initial Status'
-    this.subscribeStatusFunct = []
+    this._status = 'Initial Status'
+    this._subscribeStatusFunct = []
 
-    this.selectedInstance = null
-    this.subscribeInstanceFunct = []
+    this._selectedInstance = null
+    this._subscribeInstanceFunct = []
   }
 
   get loading () {
-    return this.loading
+    return this._loading
   }
 
-  setLoading (loading) {
-    this.loading = loading
+  set loading (loading) {
+    this._loading = loading
   }
 
   get status () {
-    return this.status
+    return this._status
   }
 
-  setStatus (status) {
-    this.status = status
-    this.subscribeStatusFunct.array.forEach(functArrayElem => {
+  set status (status) {
+    this._status = status
+    this._subscribeStatusFunct.forEach(functArrayElem => {
       functArrayElem(status)
     })
   }
 
   subscribeStatus (funct) {
-    this.subscribeStatusFunct.push(funct)
+    this._subscribeStatusFunct.push(funct)
   }
 
   unsubscribeStatus (funct) {
-    this.subscribeStatusFunct = this.subscribeStatusFunct.filter(functArrayElem => !(funct))
+    this._subscribeStatusFunct = this._subscribeStatusFunct.filter(functArrayElem => !(funct))
   }
 
   get instance () {
-    return this.instance
+    return this._instance
   }
 
-  setInstance (instance) {
-    this.instance = instance
-    this.subscribeInstanceFunct.array.forEach(functArrayElem => {
+  set instance (instance) {
+    this._instance = instance
+    this._subscribeInstanceFunct.forEach(functArrayElem => {
       functArrayElem(instance)
     })
   }
 
   subscribeInstance (funct) {
-    this.subscribeInstanceFunct = funct
+    this._subscribeInstanceFunct = funct
   }
 
   unsubscribeInstance (funct) {
-    this.subscribeInstanceFunct = this.subscribeInstanceFunct.filter(functArrayElem => !(funct))
+    this._subscribeInstanceFunct = this._subscribeInstanceFunct.filter(functArrayElem => !(funct))
   }
 }
+
+export default StateAPI
