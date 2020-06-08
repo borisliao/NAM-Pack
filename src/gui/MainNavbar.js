@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Spinner from 'react-bootstrap/Spinner'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Col } from 'react-bootstrap'
 
 const appVersion = window.require('electron').remote.app.getVersion()
 
