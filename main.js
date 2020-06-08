@@ -24,7 +24,7 @@ function createWindow () {
     slashes: true
   }))
 
-  const mainMenuToolbar = require('./modules/MainMenuToolbar.js')
+  const mainMenuToolbar = require('./gui/MainMenuToolbar.js')
   const mainMenu = Menu.buildFromTemplate(mainMenuToolbar)
   // Insert menu
   Menu.setApplicationMenu(mainMenu)
