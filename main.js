@@ -68,7 +68,7 @@ app.on('activate', function () {
 // -----------------------------------------------------------
 
 function sendStatusToWindow (text) {
-  mainWindow.webContents.executeJavaScript('window.state.status = "' + text + '"')
+  mainWindow.webContents.executeJavaScript('window.State.status = "' + text + '"')
 }
 
 function getFilenameFromUrl (url) {

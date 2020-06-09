@@ -7,7 +7,7 @@ var remote = require('electron').remote
 export default function NavbarStatus () {
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState('Starting application')
-  const State = window.state1
+  const State = window.State
 
   useEffect(() => {
     console.log(State)
