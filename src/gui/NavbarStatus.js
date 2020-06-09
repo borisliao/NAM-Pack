@@ -2,16 +2,25 @@ import React, { useState, useEffect } from 'react'
 import Spinner from 'react-bootstrap/Spinner'
 import Navbar from 'react-bootstrap/Navbar'
 import { Container, Col } from 'react-bootstrap'
-import state from '../index'
-const { ipcRenderer } = require('electron')
+var remote = require('electron').remote
 
 export default function NavbarStatus () {
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState('Starting application')
+  const State = window.state1
+
   useEffect(() => {
-    console.log('start')
-    setStatus(ipcRenderer.sendSync('synchronous-message', 'ping'))
+    console.log(State)
+    function handleStatusChange(status) {
+      setStatus(State.status)
+    }
+    State.subscribeStatus(handleStatusChange)
+
+    return function cleanup () {
+      State.unsubscribeStatus(handleStatusChange)
+    }
   })
+
   return (
     <Navbar.Text>
       <Container>

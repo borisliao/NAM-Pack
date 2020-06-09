@@ -9,5 +9,11 @@ window.onload = () => {
 
 // Primary application state manager
 const state = new StateAPI()
-module.exports = state
+window.state1 = state
+function tick () {
+  console.log(window.state1)
+  window.state1.status = new Date().toLocaleTimeString()
+  setTimeout(tick, 1000)
+}
+setTimeout(tick, 1000)
 state.status = 'Loading...'
