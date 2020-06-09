@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain, dialog, shell } = require('electron')
+const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const url = require('url')
 const path = require('path')
 const { download } = require('electron-dl')
@@ -26,13 +26,13 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
-  
+
   const mainMenu = Menu.buildFromTemplate(mainMenuToolbar)
   // Insert menu
   Menu.setApplicationMenu(mainMenu)
 
   // Turn on dev tools if in test
-  if (process.env.NODE_ENV == 'test') {
+  if (process.env.NODE_ENV === 'test') {
     // Add react dev tools (from local google-chrome installation)
     BrowserWindow.addDevToolsExtension(process.env.LOCALAPPDATA + '\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.7.0_0')
     mainWindow.toggleDevTools()
@@ -47,10 +47,6 @@ function createWindow () {
   mainWindow.on('closed', function () {
     mainWindow = null
     app.quit()
-  })
-  ipcMain.on('synchronous-message', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.returnValue = 'pong'
   })
 }
 
@@ -72,7 +68,7 @@ app.on('activate', function () {
 // -----------------------------------------------------------
 
 function sendStatusToWindow (text) {
-  mainWindow.webContents.executeJavaScript('App.updateInfo("' + text + '")')
+  mainWindow.webContents.executeJavaScript('window.state.status = "' + text + '"')
 }
 
 function getFilenameFromUrl (url) {
@@ -99,10 +95,10 @@ autoUpdater.on('error', (err) => {
   mainWindow.send('latest')
 })
 autoUpdater.on('download-progress', (progressObj) => {
-  let log_message = 'Download speed: ' + progressObj.bytesPerSecond
-  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
-  log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
-  sendStatusToWindow(log_message)
+  let logMessage = 'Download speed: ' + progressObj.bytesPerSecond
+  logMessage = logMessage + ' - Downloaded ' + progressObj.percent + '%'
+  logMessage = logMessage + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+  sendStatusToWindow(logMessage)
 })
 autoUpdater.on('update-downloaded', (info) => {
   sendStatusToWindow('Update downloaded, installing...')
@@ -122,8 +118,8 @@ ipcMain.on('vanillaNewpack', function () {
     properties: { directory: modpackDir }
   }
   console.log('Dl')
-  var vanilla_dl = download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
-  vanilla_dl.then(dl => extract(path.join(modpackDir, 'vanilla.zip'), { dir: modpackDir }, function (err) {
+  var vanillaDl = download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+  vanillaDl.then(dl => extract(path.join(modpackDir, 'vanilla.zip'), { dir: modpackDir }, function (err) {
     if (err) {
       console.log(err)
     }
