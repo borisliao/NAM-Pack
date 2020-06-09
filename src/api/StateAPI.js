@@ -7,6 +7,7 @@
 class StateAPI {
   constructor () {
     this._loading = true
+    this._subscribeLoadingFunct = []
 
     this._status = 'Initial Status'
     this._subscribeStatusFunct = []
@@ -21,6 +22,17 @@ class StateAPI {
 
   set loading (loading) {
     this._loading = loading
+    this._subscribeLoadingFunct.forEach(functArrayElem => {
+      functArrayElem(loading)
+    })
+  }
+
+  subscribeLoading (funct) {
+    this._subscribeLoadingFunct.push(funct)
+  }
+
+  unsubscribeLoading (funct) {
+    this._subscribeLoadingFunct = this._subscribeLoadingFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get status () {
