@@ -6,6 +6,8 @@
 
 class StateAPI {
   constructor () {
+    this.latest = false
+
     this._loading = true
     this._subscribeLoadingFunct = []
 
