@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Spinner from 'react-bootstrap/Spinner'
 import Navbar from 'react-bootstrap/Navbar'
 import { Container, Col } from 'react-bootstrap'
-var remote = require('electron').remote
 
 export default function NavbarStatus () {
   const [loading, setLoading] = useState(true)
