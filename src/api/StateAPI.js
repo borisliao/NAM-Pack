@@ -23,7 +23,14 @@ class StateAPI {
   }
 
   set loading (loading) {
-    this._loading = loading
+    // Allow change loading to true if this.latest (latest app version) is true
+    if (this.latest) {
+      this._loading = loading
+    } else if (!this.latest && !loading) {
+      this._loading = loading
+    } else {
+      throw new Error('Unable to change loading: App is not on the latest version!')
+    }
     this._subscribeLoadingFunct.forEach(functArrayElem => {
       functArrayElem(loading)
     })
