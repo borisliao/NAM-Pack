@@ -9,23 +9,23 @@ export default function NavbarStatus () {
   const State = window.State
 
   useEffect(() => {
-    function handleStatusChange (status) {
+    function navbarHandleStatusChange (status) {
       setStatus(State.status)
     }
 
-    function handleLoadingChange (loading) {
+    function navbarHandleLoadingChange (loading) {
       setLoading(State.loading)
     }
 
-    State.subscribeStatus(handleStatusChange)
-    State.subscribeLoading(handleLoadingChange)
+    State.subscribeStatus(navbarHandleStatusChange)
+    State.subscribeLoading(navbarHandleLoadingChange)
 
-    handleStatusChange()
-    handleLoadingChange()
+    navbarHandleStatusChange()
+    navbarHandleLoadingChange()
 
     return function cleanup () {
-      State.unsubscribeStatus(handleStatusChange)
-      State.unsubscribeLoading(handleLoadingChange)
+      State.unsubscribeStatus(navbarHandleStatusChange)
+      State.unsubscribeLoading(navbarHandleLoadingChange)
     }
   })
 
