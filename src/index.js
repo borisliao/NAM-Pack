@@ -17,6 +17,7 @@ window.onload = () => {
 const State = new StateAPI()
 window.State = State
 
+// TODO: change to process.env.APPDATA
 const mainDir = electron.remote.app.getPath('userData')
 
 let mcPath
