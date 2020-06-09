@@ -4,7 +4,7 @@
 // Provides subscribers to frontend ./gui
 // -----------------------------------------------------------
 
-class StateAPI {
+export default class StateAPI {
   constructor () {
     this.latest = false
 
@@ -82,5 +82,3 @@ class StateAPI {
     this._subscribeInstanceFunct = this._subscribeInstanceFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 }
-
-export default StateAPI
