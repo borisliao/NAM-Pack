@@ -62,4 +62,4 @@ class StateAPI {
   }
 }
 
-export default StateAPI
+module.exports = StateAPI

@@ -17,14 +17,16 @@ let mainWindow
 module.exports = app
 
 function createWindow () {
+  const StateAPI = require('./api/StateAPI.js')
+  const mainMenuToolbar = require('./gui/MainMenuToolbar.js')
+
   mainWindow = new BrowserWindow({ width: 800, height: 600 })
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
   }))
-
-  const mainMenuToolbar = require('./gui/MainMenuToolbar.js')
+  
   const mainMenu = Menu.buildFromTemplate(mainMenuToolbar)
   // Insert menu
   Menu.setApplicationMenu(mainMenu)
@@ -45,6 +47,10 @@ function createWindow () {
   mainWindow.on('closed', function () {
     mainWindow = null
     app.quit()
+  })
+  ipcMain.on('synchronous-message', (event, arg) => {
+    console.log(arg) // prints "ping"
+    event.returnValue = 'pong'
   })
 }
 
@@ -199,3 +205,4 @@ ipcMain.on('checkUpdate', function () {
 ipcMain.on('close', function (e) {
   mainWindow.close()
 })
+

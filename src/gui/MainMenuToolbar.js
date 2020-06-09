@@ -1,5 +1,5 @@
 const trash = require('trash')
-const app = require('../../main.js')
+const app = require('../main.js')
 // -----------------------------------------------------------
 // Electron Menu
 // -----------------------------------------------------------
