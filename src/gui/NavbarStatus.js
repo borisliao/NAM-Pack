@@ -9,7 +9,6 @@ export default function NavbarStatus () {
   const State = window.State
 
   useEffect(() => {
-    console.log(State)
     function handleStatusChange(status) {
       setStatus(State.status)
     }

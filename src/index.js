@@ -11,7 +11,6 @@ window.onload = () => {
 const State = new StateAPI()
 window.State = State
 function tick () {
-  console.log(window.State)
   window.State.status = new Date().toLocaleTimeString()
   setTimeout(tick, 1000)
 }
