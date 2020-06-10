@@ -1,4 +1,4 @@
-import StateAPI from '../src/api/State'
+import StateAPI from '../src/api/StateAPI'
 
 test('loading initial state is true', () => {
   const state = new StateAPI()
