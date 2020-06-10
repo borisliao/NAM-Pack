@@ -4,6 +4,9 @@
 // -----------------------------------------------------------
 import path from 'path'
 import fs, { readdirSync } from 'fs-extra'
+import got from 'got'
+import AdmZip from 'adm-zip'
+import 'regenerator-runtime/runtime.js'
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -96,7 +99,30 @@ export default class HostClient {
     return inst
   }
 
-  createProcess () {
-
+  /**
+   * Downloads a new MutliMC instance and unzips it
+   * @param {Function} progressCallback Callback args gives got.Progress object
+   */
+  async createProcess (progressCallback = null) {
+    if (process.platform === 'darwin') {
+      const response = await got('https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz')
+        .on('downloadProgress', progress => {
+          progressCallback(progress)
+        })
+      const filePath = path.join(this.mainFolder, 'mmc-stable-osx64.tar.gz')
+      fs.writeFileSync(filePath, response.rawBody)
+      // TODO Check if got deflates sucessfully
+      throw Error('Mac decompress not implemented')
+    } else if (process.platform === 'win32') {
+      const response = await got('https://files.multimc.org/downloads/mmc-stable-win32.zip')
+        .on('downloadProgress', progress => {
+          progressCallback(progress)
+        })
+      const filePath = path.join(this.mainFolder, 'mmc-stable-win32.zip')
+      fs.writeFileSync(filePath, response.rawBody)
+      const zip = new AdmZip(filePath)
+      zip.extractAllTo(this.mainFolder)
+      fs.remove('mmc-stable-win32.zip')
+    }
   }
 }
