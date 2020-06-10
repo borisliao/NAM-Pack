@@ -55,6 +55,7 @@ export default class HostClient {
    * Determines if a instance exists on disk by name
    * @param {String} inst name of instance to search
    * @param {String} method folder, manifest.json, instance.cfg
+   * @returns {Boolean} true or false
    */
   existsInstance (inst, method = 'folder') {
     const directories = listDirectories(this.instancePath)
