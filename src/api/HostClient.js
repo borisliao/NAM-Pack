@@ -59,8 +59,8 @@ export default class HostClient {
     if (method === 'folder') {
       return directories.includes(inst)
     } else if (method === 'manifest.json') {
-      directories.forEach(element => {
-        const manifestPath = path.join(this.instancePath, element, 'manifest.json')
+      for (const folder of directories) {
+        const manifestPath = path.join(this.instancePath, folder, 'manifest.json')
         if (fs.existsSync(manifestPath)) {
           const manifest = require(path.resolve(manifestPath))
           if (manifest.name === inst) {
@@ -69,7 +69,7 @@ export default class HostClient {
         } else {
           console.error(manifestPath + ' does not exist')
         }
-      })
+      }
       return false
     } else {
       throw Error('Not Implemented')
@@ -94,5 +94,9 @@ export default class HostClient {
       }
     })
     return inst
+  }
+
+  createProcess () {
+
   }
 }
