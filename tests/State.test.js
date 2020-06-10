@@ -7,6 +7,7 @@ test('loading initial state is true', () => {
 
 test('loading can change state to false', () => {
   const state = new StateAPI()
+  state.latest = true
   state.loading = false
   expect(state.loading).toBe(false)
 })
