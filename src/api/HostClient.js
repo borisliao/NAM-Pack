@@ -14,6 +14,14 @@ async function listDirectories (rootPath) {
     .map(filePathAndIsDirectoryFlag => filePathAndIsDirectoryFlag.path)
 }
 
+class Instance {
+  constructor(folderPath, instName, instVersion) {
+    this.folder = folderPath
+    this.name = instName
+    this.version = instVersion
+  }
+}
+
 export default class HostClient {
   /**
    * @param {String} pathToFolder Location of working folder (not executable)
