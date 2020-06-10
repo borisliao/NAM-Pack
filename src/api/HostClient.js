@@ -3,19 +3,15 @@
 // Responsible for managing and controlling MultiMC
 // -----------------------------------------------------------
 import path from 'path'
-import fs from 'fs-extra'
+import fs, { readdirSync } from 'fs-extra'
 
-async function listDirectories (rootPath) {
-  const fileNames = await fs.promises.readdir(rootPath)
-  const filePaths = fileNames.map(fileName => path.join(rootPath, fileName))
-  const filePathsAndIsDirectoryFlagsPromises = filePaths.map(async filePath => ({ path: filePath, isDirectory: (await fs.promises.stat(filePath)).isDirectory() }))
-  const filePathsAndIsDirectoryFlags = await Promise.all(filePathsAndIsDirectoryFlagsPromises)
-  return filePathsAndIsDirectoryFlags.filter(filePathAndIsDirectoryFlag => filePathAndIsDirectoryFlag.isDirectory)
-    .map(filePathAndIsDirectoryFlag => filePathAndIsDirectoryFlag.path)
-}
+const getDirectories = source =>
+  readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name)
 
 class Instance {
-  constructor(folderPath, instName, instVersion) {
+  constructor (folderPath, instName, instVersion) {
     this.folder = folderPath
     this.name = instName
     this.version = instVersion
@@ -58,15 +54,15 @@ export default class HostClient {
    * @returns {Boolean} true or false
    */
   existsInstance (inst, method = 'folder') {
-    const directories = listDirectories(this.instancePath)
+    const directories = getDirectories(this.instancePath)
 
     if (method === 'folder') {
       return directories.includes(inst)
     } else if (method === 'manifest.json') {
       directories.forEach(element => {
-        const manifestPath = path.join(this.instancePath, directories, 'manifest.json')
+        const manifestPath = path.join(this.instancePath, element, 'manifest.json')
         if (fs.existsSync(manifestPath)) {
-          const manifest = require(manifestPath)
+          const manifest = require(path.resolve(manifestPath))
           if (manifest.name === inst) {
             return true
           }
@@ -78,5 +74,25 @@ export default class HostClient {
     } else {
       throw Error('Not Implemented')
     }
+  }
+
+  /**
+   * Gets list of instances on disk
+   * Currently supports only manifest.json format
+   * @returns {Instance[]} Instance array object
+   */
+  getInstances () {
+    const directories = getDirectories(this.instancePath)
+    const inst = []
+
+    directories.forEach(element => {
+      const manifestPath = path.join(this.instancePath, element, 'manifest.json')
+      if (fs.existsSync(manifestPath)) {
+        const manifest = require(path.resolve(manifestPath))
+        const instFolder = path.join(this.instancePath, element)
+        inst.push(new Instance(instFolder, manifest.name, manifest.version))
+      }
+    })
+    return inst
   }
 }
