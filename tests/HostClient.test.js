@@ -5,6 +5,11 @@ test('mainFolder is ./', () => {
   expect(Host.mainFolder).toBe('./')
 })
 
+test('exists() returns false', () => {
+  const Host = new HostClient('./')
+  expect(Host.exists()).toBe(false)
+})
+
 test('existsInstance finds NAM Pack, method: folder', () => {
   const Host = new HostClient('./tests/process/')
   const x = Host.existsInstance('NAM Pack', 'folder')
