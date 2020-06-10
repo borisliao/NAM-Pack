@@ -1,4 +1,5 @@
 import HostClient from '../src/api/HostClient'
+import fs from 'fs-extra'
 
 test('mainFolder is ./', () => {
   const Host = new HostClient('./')
@@ -38,4 +39,17 @@ test('getInstance gets all the instances', () => {
   expect(x[1].name).toBe('Vanilla')
   expect(x[1].version).toBe('5.0.1')
   expect(x[1].folder).toBe('tests\\process\\MultiMC\\instances\\Vanilla')
+})
+
+test('createProcess creates a MultiMC executable', async () => {
+  const Host = new HostClient('./tests/')
+  let count = null
+  const cb = (progressObj) => {
+    count = progressObj
+  }
+  await Host.createProcess(cb)
+  expect(count.percent).toBe(1)
+  expect(Host.exists()).toBe(true)
+  fs.remove('tests/MultiMC/')
+  fs.remove('mmc-stable-win32.zip')
 })
