@@ -13,7 +13,7 @@
     "dist": "electron-builder",
     "publish": "electron-builder -p always",
     "release": "gulp release",
-    "test": "jest"
+    "test": "jest --runInBand --detectOpenHandles"
   },
   "keywords": [
     "NAM",
@@ -68,17 +68,20 @@
     ]
   },
   "dependencies": {
+    "adm-zip": "^0.4.14",
     "ajv": "^6.12.2",
     "bootstrap": "^4.5.0",
     "electron-dl": "^3.0.0",
     "electron-updater": "^4.3.1",
     "extract-zip": "^1.6.7",
     "fs-extra": "^8.1.0",
+    "got": "^11.3.0",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
+    "regenerator-runtime": "^0.13.5",
     "request": "^2.88.2",
     "trash": "^6.1.1"
   },
