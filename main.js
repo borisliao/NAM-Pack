@@ -17,7 +17,6 @@ let mainWindow
 module.exports = app
 
 function createWindow () {
-  const StateAPI = require('./api/StateAPI.js')
   const mainMenuToolbar = require('./gui/MainMenuToolbar.js')
 
   mainWindow = new BrowserWindow({ width: 800, height: 600 })
@@ -201,4 +200,3 @@ ipcMain.on('checkUpdate', function () {
 ipcMain.on('close', function (e) {
   mainWindow.close()
 })
-
