@@ -66,6 +66,8 @@ export default class HostClient {
         }
       })
       return false
+    } else {
+      throw Error('Not Implemented')
     }
   }
 }
