@@ -9,6 +9,7 @@ export default function NavbarStatus () {
   const [status, setStatus] = useState('Starting application')
   const [progress, setProgress] = useState(0)
   const State = window.State
+  let progressBar
 
   useEffect(() => {
     function navbarHandleStatusChange (status) {
@@ -43,7 +44,6 @@ export default function NavbarStatus () {
     }
   })
 
-  let progressBar
   if (progress !== 0) {
     progressBar = <ProgressBar now={progress} />
   } else {
