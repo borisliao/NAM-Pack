@@ -7,6 +7,8 @@
 export default class StateAPI {
   constructor () {
     this.latest = false
+    this.Host = null
+    this.progressBar = 0
 
     this._loading = true
     this._subscribeLoadingFunct = []
