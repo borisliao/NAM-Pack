@@ -20,7 +20,7 @@ export default class StateAPI {
 
     this.selectedInstance = 0
     this._instances = null
-    this._subscribeInstancessFunct = []
+    this._subscribeInstancesFunct = []
   }
 
   get progress () {
@@ -94,7 +94,7 @@ export default class StateAPI {
   set instances (instances) {
     this._instances = instances
     this._subscribeInstancesFunct.forEach(functArrayElem => {
-      functArrayElem(instance)
+      functArrayElem(instances)
     })
   }
 
