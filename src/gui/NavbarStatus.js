@@ -43,10 +43,17 @@ export default function NavbarStatus () {
     }
   })
 
+  let progressBar
+  if (progress !== 0) {
+    progressBar = <ProgressBar now={progress} />
+  } else {
+    progressBar = null
+  }
+
   return (
     <Navbar.Text>
+      {progressBar}
       <Container>
-        {progress !== 0 && <ProgressBar now={60} />}
         {status}
         {loading &&
           <Col><Spinner animation="border" size="sm" /></Col>
