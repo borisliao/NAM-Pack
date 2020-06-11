@@ -39,15 +39,26 @@ ipcRenderer.on('latest', () => {
 // -----------------------------------------------------------
 // App Tasks
 // -----------------------------------------------------------
+let calls = 0
+function test () {
+  console.log(calls++)
+}
 
 function checkHost () {
   State.Host = new HostClient('./tests/')
   if (!State.Host.exists()) {
+    State.status = 'Downloading MultiMC'
     State.Host.createProcess((progress) => {
-      console.log(progress)
+      State.progress = progress.percent * 100
+      console.log(State.progress)
+    }, () => {
+      State.status = 'MultiMC download completed'
+      State.progress = 0
+      test()
     })
   } else {
     State.status = 'Found MultiMC instance'
+    test()
   }
 }
 

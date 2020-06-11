@@ -102,9 +102,8 @@ export default class HostClient {
   /**
    * Downloads a new MutliMC instance and unzips it.
    * @param {Function} progressCallback Callback args gives progress object
-   * @returns Promise
    */
-  createProcess (progressCallback = null) {
+  createProcess (progressCallback = null, completeCallback = null) {
     if (process.platform === 'darwin') {
       const hostUrl = 'https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz'
 
@@ -114,17 +113,15 @@ export default class HostClient {
       const filePath = path.join(this.mainFolder, 'mmc-stable-win32.zip')
 
       ipcRenderer.send('download', { url: hostUrl, options: { directory: path.resolve(this.mainFolder) } })
-      ipcRenderer.on('progress', (event, progress) => {
-        progressCallback(progress)
-        if (progress.percent === 1) {
-          // Ignore admzip no file exists (statement fires 3 times causes error)
-          try {
-            const zip = new AdmZip(filePath)
-            zip.extractAllTo(this.mainFolder)
-            fs.removeSync(filePath)
-          } catch (e) {
-          }
-        }
+      ipcRenderer.on('progress', (event, progress) => { progressCallback(progress) })
+      ipcRenderer.on('complete', (event) => {
+        console.log('here')
+        const zip = new AdmZip(filePath)
+        zip.extractAllTo(this.mainFolder)
+        fs.removeSync(filePath)
+        ipcRenderer.removeAllListeners('progress')
+        ipcRenderer.removeAllListeners('complete')
+        completeCallback()
       })
     } else {
       throw Error('Unsupported platform')

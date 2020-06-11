@@ -113,7 +113,7 @@ var callTimes = 0
 
 ipcMain.on('download', async (event, args) => {
   args.options.onProgress = progress => mainWindow.webContents.send('progress', progress)
-  await download(mainWindow, args.url, args.options)
+  download(mainWindow, args.url, args.options).then(() => { mainWindow.webContents.send('complete') })
 })
 
 ipcMain.on('vanillaNewpack', function () {
