@@ -4,9 +4,9 @@
 // -----------------------------------------------------------
 import path from 'path'
 import fs, { readdirSync } from 'fs-extra'
-import got from 'got'
+import axios from 'axios'
 import AdmZip from 'adm-zip'
-import 'regenerator-runtime/runtime.js'
+axios.defaults.adapter = require('axios/lib/adapters/http');
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -100,29 +100,32 @@ export default class HostClient {
   }
 
   /**
-   * Downloads a new MutliMC instance and unzips it
-   * @param {Function} progressCallback Callback args gives got.Progress object
+   * Downloads a new MutliMC instance and unzips it.
+   * Only works in the browser!
+   * @param {Function} progressCallback Callback args gives progress object
+   * @returns Promise
    */
-  async createProcess (progressCallback = null) {
+  createProcess (progressCallback = null) {
+    let hostUrl
     if (process.platform === 'darwin') {
-      const response = await got('https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz')
-        .on('downloadProgress', progress => {
-          progressCallback(progress)
-        })
-      const filePath = path.join(this.mainFolder, 'mmc-stable-osx64.tar.gz')
-      fs.writeFileSync(filePath, response.rawBody)
-      // TODO Check if got deflates sucessfully
-      throw Error('Mac decompress not implemented')
-    } else if (process.platform === 'win32') {
-      const response = await got('https://files.multimc.org/downloads/mmc-stable-win32.zip')
-        .on('downloadProgress', progress => {
-          progressCallback(progress)
-        })
-      const filePath = path.join(this.mainFolder, 'mmc-stable-win32.zip')
-      fs.writeFileSync(filePath, response.rawBody)
-      const zip = new AdmZip(filePath)
-      zip.extractAllTo(this.mainFolder)
-      fs.remove('mmc-stable-win32.zip')
+      hostUrl = 'https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz'
+    } else if (process.platform == 'win32') {
+      hostUrl = 'https://files.multimc.org/downloads/mmc-stable-win32.zip'
+    } else {
+      throw Error('Unsupported platform')
     }
+
+    return axios({
+      method: 'get',
+      url: hostUrl,
+      responseType: 'stream'
+    }, {
+      onDownloadProgress: progressEvent => {
+        progressCallback(progressEvent)
+      }
+    }
+    ).then(function (response) {
+      response.data.pipe(fs.createWriteStream('mmc-stable-win32.zip'))
+    })
   }
 }
