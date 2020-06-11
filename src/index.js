@@ -45,7 +45,7 @@ function test () {
 }
 
 function checkHost () {
-  State.Host = new HostClient('./tests/')
+  State.Host = new HostClient(workingPath)
   if (!State.Host.exists()) {
     State.status = 'Downloading MultiMC'
     State.Host.createProcess((progress) => {
