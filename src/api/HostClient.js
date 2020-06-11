@@ -7,8 +7,6 @@ import fs, { readdirSync } from 'fs-extra'
 // import axios from 'axios'
 import AdmZip from 'adm-zip'
 import { ipcRenderer } from 'electron'
-const ky = require('ky-universal')
-const regeneratorRuntime = require('regenerator-runtime')
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -116,11 +114,18 @@ export default class HostClient {
       const filePath = path.join(this.mainFolder, 'mmc-stable-win32.zip')
 
       ipcRenderer.send('download', { url: hostUrl, options: { directory: path.resolve(this.mainFolder) } })
-      ipcRenderer.on('progress', (event, progress) => { progressCallback(progress) })
-
-      const zip = new AdmZip(filePath)
-      zip.extractAllTo(this.mainFolder)
-      fs.removeSync(filePath)
+      ipcRenderer.on('progress', (event, progress) => {
+        progressCallback(progress)
+        if (progress.percent === 1) {
+          // Ignore admzip no file exists (statement fires 3 times causes error)
+          try {
+            const zip = new AdmZip(filePath)
+            zip.extractAllTo(this.mainFolder)
+            fs.removeSync(filePath)
+          } catch (e) {
+          }
+        }
+      })
     } else {
       throw Error('Unsupported platform')
     }
