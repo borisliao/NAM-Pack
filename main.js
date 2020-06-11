@@ -33,16 +33,8 @@ function createWindow () {
 
   // Turn on dev tools if in test
   if (process.env.NODE_ENV === 'test') {
-    // Add react dev tools (from local google-chrome installation)
-    // BrowserWindow.addDevToolsExtension(process.env.LOCALAPPDATA + '\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.7.0_0')
     mainWindow.toggleDevTools()
   }
-
-  // ipcMain.on('download', (event, info) => {
-  //   info.properties.onProgress = status => mainWindow.webContents.send('download progress', status)
-  //   download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
-  //     .then(dl => mainWindow.webContents.send('download complete', dl.getSavePath()))
-  // })
 
   mainWindow.on('closed', function () {
     mainWindow = null
