@@ -19,8 +19,8 @@ export default class StateAPI {
     this._subscribeStatusFunct = []
 
     this.selectedInstance = 0
-    this._instance = null
-    this._subscribeInstanceFunct = []
+    this._instances = null
+    this._subscribeInstancessFunct = []
   }
 
   get progress () {
@@ -87,22 +87,22 @@ export default class StateAPI {
     this._subscribeStatusFunct = this._subscribeStatusFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
-  get instance () {
-    return this._instance
+  get instances () {
+    return this._instances
   }
 
-  set instance (instance) {
-    this._instance = instance
-    this._subscribeInstanceFunct.forEach(functArrayElem => {
+  set instances (instances) {
+    this._instances = instances
+    this._subscribeInstancesFunct.forEach(functArrayElem => {
       functArrayElem(instance)
     })
   }
 
-  subscribeInstance (funct) {
-    this._subscribeInstanceFunct.push(funct)
+  subscribeInstances (funct) {
+    this._subscribeInstancesFunct.push(funct)
   }
 
-  unsubscribeInstance (funct) {
-    this._subscribeInstanceFunct = this._subscribeInstanceFunct.filter(functArrayElem => functArrayElem !== funct)
+  unsubscribeInstances (funct) {
+    this._subscribeInstancesFunct = this._subscribeInstancesFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 }
