@@ -18,6 +18,7 @@ export default class StateAPI {
     this._status = 'Initial Status'
     this._subscribeStatusFunct = []
 
+    this.selectedInstance = 0
     this._instance = null
     this._subscribeInstanceFunct = []
   }
