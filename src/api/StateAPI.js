@@ -28,7 +28,7 @@ export default class StateAPI {
 
   set progress (progress) {
     this._progress = progress
-    this._subscribeprogressFunct.forEach(functArrayElem => {
+    this._subscribeProgressFunct.forEach(functArrayElem => {
       functArrayElem(progress)
     })
   }
