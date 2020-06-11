@@ -8,7 +8,9 @@ export default class StateAPI {
   constructor () {
     this.latest = false
     this.Host = null
-    this.progressBar = 0
+
+    this._progress = 0
+    this._subscribeProgressFunct = []
 
     this._loading = true
     this._subscribeLoadingFunct = []
@@ -18,6 +20,25 @@ export default class StateAPI {
 
     this._instance = null
     this._subscribeInstanceFunct = []
+  }
+
+  get progress () {
+    return this._progress
+  }
+
+  set progress (progress) {
+    this._progress = progress
+    this._subscribeprogressFunct.forEach(functArrayElem => {
+      functArrayElem(progress)
+    })
+  }
+
+  subscribeProgress (funct) {
+    this._subscribeProgressFunct.push(funct)
+  }
+
+  unsubscribeProgress (funct) {
+    this._subscribeProgressFunct = this._subscribeLoadingFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get loading () {
