@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime.js'
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 const url = require('url')
 const path = require('path')
@@ -19,7 +20,7 @@ module.exports = app
 function createWindow () {
   const mainMenuToolbar = require('./gui/MainMenuToolbar.js')
 
-  mainWindow = new BrowserWindow({ width: 800, height: 600 })
+  mainWindow = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true } })
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
@@ -33,15 +34,15 @@ function createWindow () {
   // Turn on dev tools if in test
   if (process.env.NODE_ENV === 'test') {
     // Add react dev tools (from local google-chrome installation)
-    BrowserWindow.addDevToolsExtension(process.env.LOCALAPPDATA + '\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.7.0_0')
+    // BrowserWindow.addDevToolsExtension(process.env.LOCALAPPDATA + '\\Google\\Chrome\\User Data\\Default\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.7.0_0')
     mainWindow.toggleDevTools()
   }
 
-  ipcMain.on('download', (event, info) => {
-    info.properties.onProgress = status => mainWindow.webContents.send('download progress', status)
-    download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
-      .then(dl => mainWindow.webContents.send('download complete', dl.getSavePath()))
-  })
+  // ipcMain.on('download', (event, info) => {
+  //   info.properties.onProgress = status => mainWindow.webContents.send('download progress', status)
+  //   download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+  //     .then(dl => mainWindow.webContents.send('download complete', dl.getSavePath()))
+  // })
 
   mainWindow.on('closed', function () {
     mainWindow = null
@@ -109,6 +110,11 @@ autoUpdater.on('update-downloaded', (info) => {
 // -----------------------------------------------------------
 
 var callTimes = 0
+
+ipcMain.on('download', async (event, args) => {
+  args.options.onProgress = progress => mainWindow.webContents.send('progress', progress)
+  await download(mainWindow, args.url, args.options)
+})
 
 ipcMain.on('vanillaNewpack', function () {
   var modpackDir = path.join(app.getPath('userData'), 'process', 'MultiMC', 'instances')

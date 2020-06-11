@@ -4,9 +4,11 @@
 // -----------------------------------------------------------
 import path from 'path'
 import fs, { readdirSync } from 'fs-extra'
-import axios from 'axios'
+// import axios from 'axios'
 import AdmZip from 'adm-zip'
-axios.defaults.adapter = require('axios/lib/adapters/http');
+import { ipcRenderer } from 'electron'
+const ky = require('ky-universal')
+const regeneratorRuntime = require('regenerator-runtime')
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -101,31 +103,26 @@ export default class HostClient {
 
   /**
    * Downloads a new MutliMC instance and unzips it.
-   * Only works in the browser!
    * @param {Function} progressCallback Callback args gives progress object
    * @returns Promise
    */
   createProcess (progressCallback = null) {
-    let hostUrl
     if (process.platform === 'darwin') {
-      hostUrl = 'https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz'
-    } else if (process.platform == 'win32') {
-      hostUrl = 'https://files.multimc.org/downloads/mmc-stable-win32.zip'
+      const hostUrl = 'https://files.multimc.org/downloads/mmc-stable-osx64.tar.gz'
+
+      ipcRenderer.send('download', { url: hostUrl, options: { directory: path.resolve(this.mainFolder) } })
+    } else if (process.platform === 'win32') {
+      const hostUrl = 'https://files.multimc.org/downloads/mmc-stable-win32.zip'
+      const filePath = path.join(this.mainFolder, 'mmc-stable-win32.zip')
+
+      ipcRenderer.send('download', { url: hostUrl, options: { directory: path.resolve(this.mainFolder) } })
+      ipcRenderer.on('progress', (event, progress) => { progressCallback(progress) })
+
+      const zip = new AdmZip(filePath)
+      zip.extractAllTo(this.mainFolder)
+      fs.removeSync(filePath)
     } else {
       throw Error('Unsupported platform')
     }
-
-    return axios({
-      method: 'get',
-      url: hostUrl,
-      responseType: 'stream'
-    }, {
-      onDownloadProgress: progressEvent => {
-        progressCallback(progressEvent)
-      }
-    }
-    ).then(function (response) {
-      response.data.pipe(fs.createWriteStream('mmc-stable-win32.zip'))
-    })
   }
 }
