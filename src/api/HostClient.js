@@ -8,6 +8,8 @@ import Instance from './Instance'
 import AdmZip from 'adm-zip'
 import { ipcRenderer } from 'electron'
 import { spawn } from 'child_process'
+import 'regenerator-runtime/runtime.js'
+import createModpack from '../lib/mcm-dl/index'
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -133,5 +135,46 @@ export default class HostClient {
   launch (args = [], options = {}) {
     const mc = spawn(this.executablePath, args, options)
     return mc
+  }
+
+  /**
+   * Downloads and installs instances one by one
+   * @param {Instance[]} instArray
+   * @param {Function} progressCallback (progress:Progress)
+   */
+  async installInstances (instArray, progressCallback = null) {
+    const mainProgress = { percent: 0, totalDownloaded: 0, total: instArray.length, state: 'initilized' }
+    for (const index in instArray) {
+      const dlurl = instArray[index].url
+      const dlpath = path.resolve(this.mainFolder)
+
+      const dlname = instArray[index].name
+      const dlversion = instArray[index].version
+      mainProgress.state = 'Downloading ' + dlname + ' v' + dlversion
+
+      const zipcb = function (progress) {
+        console.log(progress.percent)
+        mainProgress.percent = progress.percent
+        progressCallback(mainProgress)
+      }
+      await this.dlIpc(dlurl, dlpath, zipcb)
+    }
+  }
+
+  /**
+   * Wrapper to download a file for electron ipc
+   * **Cannot be run in parallel**
+   */
+  dlIpc (dlurl, dlpath, progressCallback = null) {
+    const dlPromise = new Promise(function (resolve, reject) {
+      ipcRenderer.send('download', { url: dlurl, options: { directory: dlpath } })
+      ipcRenderer.on('progress', (event, progress) => { progressCallback(progress) })
+      ipcRenderer.on('complete', (event) => {
+        ipcRenderer.removeAllListeners('progress')
+        ipcRenderer.removeAllListeners('complete')
+        resolve(dlpath)
+      })
+    })
+    return dlPromise
   }
 }
