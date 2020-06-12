@@ -1,6 +1,4 @@
-/// <reference types="node" />
 import Modpack from './Modpack';
-import * as events from 'events';
 declare class Twitch extends Modpack {
     readonly manifest: any;
     constructor(file: string, type: string, author: string, version: string, manifest: any);
@@ -23,13 +21,10 @@ declare class Twitch extends Modpack {
      * Downloads all mods in manifest.json and saves it in a mods folder
      *
      * @param path Location to save mods folder to
-     * @returns eventEmitter
-     *
-     * Events:
-     *
-     * .on('download-progress', (downloaded, total))
+     * @param progressCallback
+     * @returns Promise
      */
-    download(path: string): events.EventEmitter;
+    download(path: string, cb?: Function): Promise<unknown>;
     /**
      * Creates a MutliMC compatible instance
      *
@@ -37,6 +32,6 @@ declare class Twitch extends Modpack {
      *
      * @param path Location to save MultiMC instance to
      */
-    createMultiMC(path: string): void;
+    createMultiMC(path: string, progressCallback?: Function): Promise<void>;
 }
 export default Twitch;
