@@ -32,6 +32,7 @@ export default class HostClient {
     } else if (process.platform === 'win32') {
       this.executablePath = path.join(this.mainFolder, 'MultiMC', 'MultiMC.exe')
       this.instancePath = path.join(this.mainFolder, 'MultiMC', 'instances')
+      fs.mkdirSync(this.instancePath, {recursive: true})
     } else {
       this.executablePath = null
     }
