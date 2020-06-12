@@ -54,10 +54,11 @@ function checkForInstanceUpdates () {
     if (outOfDate.length === 0) {
       readyLaunch()
     } else {
-      State.Host.installInstances(outOfDate, (mainProg) => {
+      await State.Host.installInstances(outOfDate, (mainProg) => {
         State.progress = mainProg.percent * 100
         State.status = mainProg.state
       })
+      readyLaunch()
     }
   })()
 }

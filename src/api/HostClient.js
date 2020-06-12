@@ -9,12 +9,16 @@ import AdmZip from 'adm-zip'
 import { ipcRenderer } from 'electron'
 import { spawn } from 'child_process'
 import 'regenerator-runtime/runtime.js'
-import createModpack from '../lib/mcm-dl/index'
+import { createTwitch } from '../lib/mcm-dl/src/main'
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
+
+function getFilenameFromUrl (url) {
+  return url.substring(url.lastIndexOf('/') + 1)
+}
 
 export default class HostClient {
   /**
@@ -151,13 +155,29 @@ export default class HostClient {
       const dlname = instArray[index].name
       const dlversion = instArray[index].version
       mainProgress.state = 'Downloading ' + dlname + ' v' + dlversion
+      const fileLocation = path.join(dlpath, getFilenameFromUrl(dlurl))
 
       const zipcb = function (progress) {
-        console.log(progress.percent)
+        console.log(progress)
         mainProgress.percent = progress.percent
         progressCallback(mainProgress)
       }
+
       await this.dlIpc(dlurl, dlpath, zipcb)
+
+      console.log(fileLocation)
+      const modpack = createTwitch(fileLocation)
+
+      await modpack.createMultiMC(this.instancePath, (progress) => {
+        mainProgress.percent = progress.percent
+        mainProgress.totalDownloaded = progress.totalDownloaded
+        mainProgress.total = progress.total
+        mainProgress.state = 'Downloading mods for ' + dlname
+        progressCallback(mainProgress)
+        console.log(mainProgress)
+      })
+
+      fs.remove(fileLocation)
     }
   }
 
