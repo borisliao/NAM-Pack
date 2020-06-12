@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Spinner from 'react-bootstrap/Spinner'
 import { Container } from 'react-bootstrap'
+import { ipcRenderer } from 'electron'
 
 export default function Selector () {
   const [loading, setLoading] = useState(true)
@@ -39,9 +40,13 @@ export default function Selector () {
   }
 
   function runMutliMCDetached () {
-    const mc = State.Host.launch()
+    const mc = State.Host.launch(['-l', instances[selected].name], {
+      detached: true,
+      stdio: 'ignore'
+    })
     mc.on('close', (code) => { State.loading = false })
     State.loading = true
+    ipcRenderer.send('close')
   }
 
   return (

@@ -131,13 +131,7 @@ export default class HostClient {
    * @returns {EventEmitter}
    */
   launch (args = [], options = {}) {
-    if (process.platform === 'darwin') {
-      throw Error('Not Implemented')
-    } else if (process.platform === 'win32') {
-      const mc = spawn(this.executablePath, args, options)
-      mc.stderr.on('data', (data) => { console.log(data.toString()) })
-      mc.on('error', (err) => { console.error(`Failed to start subprocess. ${err}`) })
-      return mc
-    }
+    const mc = spawn(this.executablePath, args, options)
+    return mc
   }
 }
