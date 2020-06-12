@@ -5,6 +5,7 @@ import StateAPI from './api/StateAPI'
 import HostClient from './api/HostClient'
 import electron, { ipcRenderer } from 'electron'
 import path from 'path'
+import Remote from './api/Remote'
 
 window.onload = () => {
   ReactDOM.render(<App />, document.getElementById('app'))
@@ -39,8 +40,17 @@ ipcRenderer.on('latest', () => {
 // -----------------------------------------------------------
 // App Tasks
 // -----------------------------------------------------------
+function checkForInstanceUpdates () {
+  (async () => {
+    const remote = new Remote()
+    const x = await remote.getOutOfDate(State.instances)
+    console.log(x)
+  })()
+}
+
 function loadDiskInstances () {
   State.instances = State.Host.getInstances()
+  checkForInstanceUpdates()
 }
 
 function checkHost () {
