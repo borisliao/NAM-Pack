@@ -38,10 +38,16 @@ export default function Selector () {
     setSelected(index)
   }
 
+  function runMutliMCDetached () {
+    const mc = State.Host.launch()
+    mc.on('close', (code) => { State.loading = false })
+    State.loading = true
+  }
+
   return (
     <Container>
       <ButtonGroup>
-        <Button variant="primary" disabled={loading}>
+        <Button variant="primary" disabled={loading} onClick={e => { runMutliMCDetached() }}>
           {loading &&
             <Spinner
               animation="border"

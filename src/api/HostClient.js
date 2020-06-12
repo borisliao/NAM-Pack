@@ -7,6 +7,7 @@ import fs, { readdirSync } from 'fs-extra'
 import Instance from './Instance'
 import AdmZip from 'adm-zip'
 import { ipcRenderer } from 'electron'
+import { spawn } from 'child_process'
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -117,6 +118,26 @@ export default class HostClient {
       })
     } else {
       throw Error('Unsupported platform')
+    }
+  }
+
+  /**
+   * Spawns a MultiMC instance
+   *
+   * Read https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
+   * for args/option info
+   * @param {[]} args
+   * @param {{}} options
+   * @returns {EventEmitter}
+   */
+  launch (args = [], options = {}) {
+    if (process.platform === 'darwin') {
+      throw Error('Not Implemented')
+    } else if (process.platform === 'win32') {
+      const mc = spawn(this.executablePath, args, options)
+      mc.stderr.on('data', (data) => { console.log(data.toString()) })
+      mc.on('error', (err) => { console.error(`Failed to start subprocess. ${err}`) })
+      return mc
     }
   }
 }

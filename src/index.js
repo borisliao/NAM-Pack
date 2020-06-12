@@ -40,11 +40,20 @@ ipcRenderer.on('latest', () => {
 // -----------------------------------------------------------
 // App Tasks
 // -----------------------------------------------------------
+function readyLaunch () {
+  State.loading = false
+  State.status = 'Ready to play!'
+}
+
 function checkForInstanceUpdates () {
   (async () => {
+    State.status = 'Checking for pack updates'
+
     const remote = new Remote()
-    const x = await remote.getOutOfDate(State.instances)
-    console.log(x)
+    const outOfDate = await remote.getOutOfDate(State.instances)
+    if (outOfDate.length === 0) {
+      readyLaunch()
+    }
   })()
 }
 

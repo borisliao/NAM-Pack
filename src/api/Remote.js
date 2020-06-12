@@ -6,9 +6,14 @@ export default class Remote {
     const remoteJson = await this.getProfile()
     const profiles = remoteJson.profiles
     const outOfDateArray = []
-    for (const inst of diskInstanceArray) {
-      if (profiles[inst.name].version > inst.version) {
-        outOfDateArray.push(profiles[inst.name])
+    for (const diskInst of diskInstanceArray) {
+      const remoteVersion = profiles[diskInst.name].version
+      if (remoteVersion > diskInst.version) {
+        const remoteName = diskInst.name
+        const remoteUrl = profiles[diskInst.name].url
+        const remoteType = profiles[diskInst.name].type
+        const updateInstanceInfo = new Instance('remote', remoteName, remoteVersion, remoteUrl, remoteType)
+        outOfDateArray.push(updateInstanceInfo)
       }
     }
     return outOfDateArray
