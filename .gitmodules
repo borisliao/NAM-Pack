@@ -1,3 +1,0 @@
-[submodule "src/lib/mcm-dl"]
-	path = src/lib/mcm-dl
-	url = https://github.com/borisliao/mcm-dl
