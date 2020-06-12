@@ -4,7 +4,7 @@
 // -----------------------------------------------------------
 import path from 'path'
 import fs, { readdirSync } from 'fs-extra'
-// import axios from 'axios'
+import Instance from './Instance'
 import AdmZip from 'adm-zip'
 import { ipcRenderer } from 'electron'
 
@@ -12,14 +12,6 @@ const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
-
-class Instance {
-  constructor (folderPath, instName, instVersion) {
-    this.folder = folderPath
-    this.name = instName
-    this.version = instVersion
-  }
-}
 
 export default class HostClient {
   /**
