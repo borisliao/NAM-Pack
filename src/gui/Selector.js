@@ -8,6 +8,8 @@ import { Container } from 'react-bootstrap'
 
 export default function Selector () {
   const [loading, setLoading] = useState(true)
+  const [instances, setInstances] = useState(null)
+  const [selected, setSelected] = useState(0)
   const State = window.State
 
   useEffect(() => {
@@ -15,14 +17,26 @@ export default function Selector () {
       setLoading(State.loading)
     }
 
+    function selectorHandleInstancesChange (loading) {
+      setInstances(State.instances)
+    }
+
     State.subscribeLoading(selectorHandleLoadingChange)
+    State.subscribeInstances(selectorHandleInstancesChange)
 
     selectorHandleLoadingChange()
+    selectorHandleInstancesChange()
 
     return function cleanup () {
       State.unsubscribeLoading(selectorHandleLoadingChange)
+      State.unsubscribeInstances(selectorHandleInstancesChange)
     }
   })
+
+  function changeInstance (index) {
+    State.selectedInstance = index
+    setSelected(index)
+  }
 
   return (
     <Container>
@@ -35,11 +49,11 @@ export default function Selector () {
             />}
           Play
         </Button>
-        <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-          <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-          <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-          <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-        </DropdownButton>
+        {instances && <DropdownButton id="dropdown-basic-button" title={instances[selected].name}>
+          {instances.map((inst, index) => {
+            return <Dropdown.Item key={inst.name} onClick={e => { changeInstance(index) }}>{inst.name} <i>{' (v' + inst.version + ')'}</i></Dropdown.Item>
+          })}
+        </DropdownButton>}
       </ButtonGroup>
     </Container>
   )

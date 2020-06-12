@@ -39,9 +39,8 @@ ipcRenderer.on('latest', () => {
 // -----------------------------------------------------------
 // App Tasks
 // -----------------------------------------------------------
-let calls = 0
-function test () {
-  console.log(calls++)
+function loadDiskInstances () {
+  State.instances = State.Host.getInstances()
 }
 
 function checkHost () {
@@ -54,11 +53,11 @@ function checkHost () {
     }, () => {
       State.status = 'MultiMC download completed'
       State.progress = 0
-      test()
+      loadDiskInstances()
     })
   } else {
     State.status = 'Found MultiMC instance'
-    test()
+    loadDiskInstances()
   }
 }
 
