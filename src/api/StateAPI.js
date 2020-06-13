@@ -9,6 +9,9 @@ export default class StateAPI {
     this.latest = false
     this.Host = null
 
+    this._alert = null
+    this._subscribeAlertFunct = []
+
     this._progress = 0
     this._subscribeProgressFunct = []
 
@@ -21,6 +24,25 @@ export default class StateAPI {
     this.selectedInstance = 0
     this._instances = null
     this._subscribeInstancesFunct = []
+  }
+
+  get alert () {
+    return this._alert
+  }
+
+  set alert (alert) {
+    this._alert = alert
+    this._subscribeAlertFunct.forEach(functArrayElem => {
+      functArrayElem(alert)
+    })
+  }
+
+  subscribeAlert (funct) {
+    this._subscribeAlertFunct.push(funct)
+  }
+
+  unsubscribeAlert (funct) {
+    this._subscribeAlertFunct = this._subscribeLoadingFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get progress () {

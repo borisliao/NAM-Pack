@@ -2,6 +2,15 @@ import Instance from './Instance'
 import 'regenerator-runtime/runtime.js'
 
 export default class Remote {
+  async getAlert () {
+    const remoteJson = await this.getProfile()
+    if (remoteJson.alert) {
+      return remoteJson.alert
+    } else {
+      return null
+    }
+  }
+
   async getOutOfDate (diskInstanceArray) {
     const remoteJson = await this.getProfile()
     const profiles = remoteJson.profiles

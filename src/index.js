@@ -50,6 +50,8 @@ function checkForInstanceUpdates () {
     State.status = 'Checking for pack updates'
 
     const remote = new Remote()
+    State.alert = await remote.getAlert()
+
     const outOfDate = await remote.getOutOfDate(State.instances)
     if (outOfDate.length === 0) {
       readyLaunch()
