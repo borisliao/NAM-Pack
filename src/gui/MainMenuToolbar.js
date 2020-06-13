@@ -2,6 +2,7 @@ const trash = require('trash')
 const app = require('../main.js')
 const { dialog, shell } = require('electron')
 const path = require('path')
+const { spawn } = require('child_process')
 // -----------------------------------------------------------
 // Electron Menu
 // -----------------------------------------------------------
@@ -16,18 +17,25 @@ const mainMenuTemplate = [
             buttons: ['Yes', 'Cancel'],
             message: 'Do you really want to delete MultiMC? This sends your MultiMC to the trash!'
           }
-          var cancel = dialog.showMessageBox(options)
+          const reloadMessage = {
+            buttons: ['Ok'],
+            message: 'Please close and restart the application to finish deleting'
+          }
+          var cancel = dialog.showMessageBoxSync(options)
           if (!cancel) {
-            trash(path.join(app.getPath('userData'), 'process')).then(function () {
-              mainWindow.reload()
-            })
+            console.log('new')
+            trash(path.join(process.env.APPDATA, 'NAM Pack', 'process'))
+            dialog.showMessageBoxSync(reloadMessage)
           }
         }
       },
       {
-        label: 'Launch MultiMC normally',
+        label: 'Launch MultiMC normally (Windows Only)',
         click () {
-          mainWindow.webContents.executeJavaScript('App.launchNoArgs()')
+          spawn(path.join(process.env.APPDATA, 'NAM Pack', 'process', 'MultiMC', 'MultiMC.exe'), [], {
+            detached: true,
+            stdio: 'ignore'
+          })
         }
       },
       {
