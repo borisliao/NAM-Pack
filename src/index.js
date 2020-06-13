@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forceUpdate } from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
 import StateAPI from './api/StateAPI'
@@ -8,7 +8,13 @@ import path from 'path'
 import Remote from './api/Remote'
 import fs from 'fs'
 
-window.onload = () => {
+window.onload = async () => {
+  const remote = new Remote()
+  State.alert = await remote.getAlert()
+
+  const mediaJson = await remote.getMedia().catch(error => console.error(error.message))
+  fs.writeFileSync(path.join(workingPath, 'media.json'), JSON.stringify(mediaJson))
+
   ReactDOM.render(<App />, document.getElementById('app'))
 }
 
@@ -46,6 +52,10 @@ ipcRenderer.on('latest', () => {
 function readyLaunch () {
   State.loading = false
   State.status = 'Ready to play!'
+  // TODO: FIX
+  // Quick hack to force a render refresh on Info for first time launch
+  State.selectedInstance = 1
+  State.selectedInstance = 0
 }
 
 function checkForInstanceUpdates () {
@@ -53,10 +63,6 @@ function checkForInstanceUpdates () {
     State.status = 'Checking for pack updates'
 
     const remote = new Remote()
-    State.alert = await remote.getAlert()
-
-    const mediaJson = await remote.getMedia().catch(error => console.error(error.message))
-    fs.writeFileSync(path.join(workingPath, 'media.json'), JSON.stringify(mediaJson))
 
     const outOfDate = await remote.getOutOfDate(State.instances)
     if (outOfDate.length === 0) {

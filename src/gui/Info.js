@@ -43,15 +43,15 @@ export default function Info () {
     const mediaTitle = []
     const diskPath = determinePath()
     if (fs.exists(diskPath)) {
-      const a = fs.readFileSync(diskPath)
       try {
+        const a = fs.readFileSync(diskPath)
         const jsonA = JSON.parse(a)
         return jsonA
         // for (const key of Object.keys(jsonA)) {
         //   mediaTitle.push(<h1 key={key}>{key}</h1>)
         // }
       } catch (e) {
-        if (e.name !== 'SyntaxError') {
+        if (e.name !== 'SyntaxError' || e.name !== 'ENOENT') {
           console.error(e)
         }
         try {
@@ -105,7 +105,7 @@ export default function Info () {
       <Media>
         <Media.Body>
           <Carousel>
-            {media[State.instances[instance].name].img.map((url, index) => (
+            {!State.loading && media[State.instances[instance].name].img.map((url, index) => (
               <Carousel.Item key={url}>
                 <img
                   className="d-block w-100"
@@ -114,8 +114,8 @@ export default function Info () {
               </Carousel.Item>
             ))}
           </Carousel>
-          <h5>{media[State.instances[instance].name].title}</h5>
-          <p>{media[State.instances[instance].name].description}</p>
+          <h5>{!State.loading && media[State.instances[instance].name].title}</h5>
+          <p>{!State.loading && media[State.instances[instance].name].description}</p>
         </Media.Body>
       </Media>
     </Container>
