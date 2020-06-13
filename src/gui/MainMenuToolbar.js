@@ -1,5 +1,7 @@
 const trash = require('trash')
 const app = require('../main.js')
+const { dialog, shell } = require('electron')
+const path = require('path')
 // -----------------------------------------------------------
 // Electron Menu
 // -----------------------------------------------------------
