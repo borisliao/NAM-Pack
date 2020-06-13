@@ -1,4 +1,4 @@
-import React, { forceUpdate } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app.js'
 import StateAPI from './api/StateAPI'
