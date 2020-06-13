@@ -1,17 +1,19 @@
 {
   "name": "nam-pack-launcher",
   "productName": "NAM Pack",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A minecraft launcher for a custom mod pack",
-  "main": "main.js",
+  "main": "app/main.js",
   "author": "Boris Liao",
   "license": "BSD-2-Clause",
   "scripts": {
     "postinstall": "install-app-deps",
-    "start": "set NODE_ENV=test&& electron .",
+    "start": "set NODE_ENV=test&& gulp",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "publish": "electron-builder -p always"
+    "publish": "electron-builder -p always",
+    "release": "gulp release",
+    "test": "jest --runInBand --detectOpenHandles"
   },
   "keywords": [
     "NAM",
@@ -58,24 +60,52 @@
     },
     "nsis": {
       "deleteAppDataOnUninstall": true
-    }
+    },
+    "files": [
+      "app/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
   },
   "dependencies": {
-    "ajv": "^6.12.0",
-    "bootstrap": "^4.4.1",
+    "adm-zip": "^0.4.14",
+    "ajv": "^6.12.2",
+    "bootstrap": "^4.5.0",
     "electron-dl": "^3.0.0",
-    "electron-updater": "^4.2.5",
+    "electron-updater": "^4.3.1",
     "extract-zip": "^1.6.7",
     "fs-extra": "^8.1.0",
-    "jquery": "^3.5.0",
+    "got": "^11.3.0",
+    "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "^16.13.1",
+    "regenerator-runtime": "^0.13.5",
     "request": "^2.88.2",
     "trash": "^6.1.1"
   },
   "devDependencies": {
-    "electron": "^3.1.4",
-    "electron-builder": "^22.4.1",
-    "jshint": "^2.11.1"
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
+    "electron": "^9.0.3",
+    "electron-builder": "^22.7.0",
+    "eslint": "^7.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.21.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.4",
+    "eslint-plugin-standard": "^4.0.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-livereload": "^4.0.2",
+    "jest": "^26.0.1",
+    "typescript": "^3.9.5"
   },
   "repository": {
     "type": "git",

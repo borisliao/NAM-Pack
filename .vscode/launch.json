@@ -4,6 +4,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Jest single run all tests",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+            "args": [
+              "--verbose",
+              "-i",
+              "--no-cache"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Electron: Main",
             "protocol": "inspector",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",

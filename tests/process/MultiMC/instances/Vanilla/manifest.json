@@ -1,0 +1,10 @@
+{
+  "minecraft": {
+    "version": "20w12a"
+  },
+  "manifestType": "minecraft",
+  "manifestVersion": 1,
+  "name": "Vanilla",
+  "version": "5.0.1",
+  "author": "3upman"
+}
