@@ -7,7 +7,7 @@ const appVersion = window.require('electron').remote.app.getVersion()
 export default function MainNavbar () {
   return (
     <Navbar bg="light">
-      <Navbar.Brand href="#home"> NAM Pack </Navbar.Brand>
+      <Navbar.Brand> NAM Pack </Navbar.Brand>
       <Navbar.Text><em> v{appVersion} </em></Navbar.Text>
       <Navbar.Collapse className="justify-content-end">
         <NavbarStatus />
