@@ -6,6 +6,7 @@ import HostClient from './api/HostClient'
 import electron, { ipcRenderer } from 'electron'
 import path from 'path'
 import Remote from './api/Remote'
+import fs from 'fs'
 
 window.onload = () => {
   ReactDOM.render(<App />, document.getElementById('app'))
@@ -29,6 +30,8 @@ if (process.platform === 'darwin') {
   workingPath = path.join(mainDir, 'process')
 }
 
+State.workingPath = workingPath
+
 // -----------------------------------------------------------
 // Main process event handlers
 // -----------------------------------------------------------
@@ -51,6 +54,9 @@ function checkForInstanceUpdates () {
 
     const remote = new Remote()
     State.alert = await remote.getAlert()
+
+    const mediaJson = await remote.getMedia().catch(error => console.error(error.message))
+    fs.writeFileSync(path.join(workingPath, 'media.json'), JSON.stringify(mediaJson))
 
     const outOfDate = await remote.getOutOfDate(State.instances)
     if (outOfDate.length === 0) {

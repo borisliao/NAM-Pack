@@ -1,57 +1,114 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Media from 'react-bootstrap/Media'
 import Carousel from 'react-bootstrap/Carousel'
 import { Container } from 'react-bootstrap'
+import fs from 'fs-extra'
+import path from 'path'
 
 export default function Info () {
+  const State = window.State
+  const [instance, setInstance] = useState(State.selectedInstance)
+  const [media, setMedia] = useState(updateJson())
+
+  useEffect(() => {
+    function infoHandleSelectedInstanceChange (index) {
+      setInstance(index)
+    }
+
+    let fsWait = false
+    const diskPath = determinePath()
+    const watcher = fs.watch(diskPath, (event, filename) => {
+      if (filename) {
+        if (fsWait) return
+        fsWait = setTimeout(() => {
+          fsWait = false
+        }, 100)
+        setMedia(updateJson())
+      }
+    })
+
+    State.subscribeSelectedInstance(infoHandleSelectedInstanceChange)
+
+    return function cleanup () {
+      State.unsubscribeSelectedInstance(infoHandleSelectedInstanceChange)
+      watcher.close()
+    }
+  })
+
+  function determinePath () {
+    return path.join(State.workingPath, 'media.json')
+  }
+
+  function updateJson () {
+    const mediaTitle = []
+    const diskPath = determinePath()
+    if (fs.exists(diskPath)) {
+      const a = fs.readFileSync(diskPath)
+      try {
+        const jsonA = JSON.parse(a)
+        for (const key of Object.keys(jsonA)) {
+          mediaTitle.push(<h1 key={key}>{key}</h1>)
+        }
+      } catch (e) {
+        if (e.name !== 'SyntaxError') {
+          console.error(e)
+        }
+        try {
+          return updateJson()
+        } catch (e) {
+          if (e.name !== 'RangeError') {
+            console.error(e)
+          }
+          console.error('Syntax error in media.json')
+        }
+      }
+    }
+    return mediaTitle
+  }
+
+  // const mediaTitle = []
+  // // let mediaDescription
+  // // let mediaImg
+  // if (media) {
+  //   for (const key of Object.keys(media)) {
+  //     mediaTitle.push(<h1 key={key}>{key}</h1>)
+  //   }
+  // }
+
+  // const mediaCarousel = []
+  // if (typeof media !== 'undefined') {
+  //   mediaTitle = media.default.title
+  //   mediaDescription = media.default.description
+  //   mediaImg = media.default.img
+  //   if (State.instances[instance] && media[State.instances[instance].name]) {
+  //     const selectedInstMedia = media[State.instances[instance].name]
+  //     mediaTitle = selectedInstMedia.title
+  //     mediaDescription = selectedInstMedia.description
+  //     mediaImg = selectedInstMedia.img
+  //   }
+
+  //   for (const mediaURL of mediaImg) {
+  //     mediaCarousel.push(
+  //       <Carousel.Item key={mediaURL}>
+  //         <img
+  //           className="d-block w-100"
+  //           src={mediaURL}
+  //         />
+  //       </Carousel.Item>
+  //     )
+  //   }
+  // }
+
   return (
     <Container fluid>
       <Media>
         <Media.Body>
           <Carousel>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="holder.js/800x400?text=First slide&bg=373940"
-                alt="First slide"
-              />
-              <Carousel.Caption>
-                <h3>First slide label</h3>
-                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="holder.js/800x400?text=Second slide&bg=282c34"
-                alt="Third slide"
-              />
-
-              <Carousel.Caption>
-                <h3>Second slide label</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="holder.js/800x400?text=Third slide&bg=20232a"
-                alt="Third slide"
-              />
-
-              <Carousel.Caption>
-                <h3>Third slide label</h3>
-                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
+            {/* {mediaCarousel} */}
           </Carousel>
-          <h5>List-based media object</h5>
-          <p>
-        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-        ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-        tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-        fringilla. Donec lacinia congue felis in faucibus.
-          </p>
+          <h1>{instance}</h1>
+          {media}
+          {/* <p>{mediaDescription}</p> */}
         </Media.Body>
       </Media>
     </Container>

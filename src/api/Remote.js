@@ -65,4 +65,20 @@ export default class Remote {
 
     return parsed
   }
+
+  async getMedia () {
+    class HTTPError extends Error {}
+
+    const response = await fetch('https://cdn.jsdelivr.net/gh/borisliao/nam-dist@master/media.json', {
+      method: 'GET'
+    })
+
+    if (!response.ok) {
+      throw new HTTPError('Fetch error:', response.statusText)
+    }
+
+    const parsed = await response.json()
+
+    return parsed
+  }
 }

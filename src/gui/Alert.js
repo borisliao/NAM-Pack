@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import Alert from 'react-bootstrap/Alert'
 
-export default function Selector () {
+export default function AlertObj () {
   const [show, setShow] = useState(false)
   const [message, setMessage] = useState(null)
   const State = window.State
 
   useEffect(() => {
-    function selectorHandleMessageChange (message) {
+    function AlertHandleMessageChange (message) {
       if (State.alert) {
         setMessage(State.alert)
         setShow(true)
       }
     }
 
-    State.subscribeAlert(selectorHandleMessageChange)
+    State.subscribeAlert(AlertHandleMessageChange)
 
-    selectorHandleMessageChange()
+    AlertHandleMessageChange()
 
     return function cleanup () {
-      State.unsubscribeAlert(selectorHandleMessageChange)
+      State.unsubscribeAlert(AlertHandleMessageChange)
     }
   })
 

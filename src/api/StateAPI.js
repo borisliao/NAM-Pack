@@ -8,6 +8,18 @@ export default class StateAPI {
   constructor () {
     this.latest = false
     this.Host = null
+    this.workingPath = null
+
+    this._remoteMedia = {
+      default: {
+        title: 'NAM Client',
+        description: 'World class launcher and auto updater for a world class server!',
+        img: [
+          'https://raw.githubusercontent.com/borisliao/NAM-Pack/master/docs/assets/img/logo.jpg'
+        ]
+      }
+    }
+    this._subscribeRemoteMediaFunct = []
 
     this._alert = null
     this._subscribeAlertFunct = []
@@ -21,9 +33,49 @@ export default class StateAPI {
     this._status = 'Initial Status'
     this._subscribeStatusFunct = []
 
-    this.selectedInstance = 0
+    this._selectedInstance = 0
+    this._subscribeSelectedInstanceFunct = []
+
     this._instances = null
     this._subscribeInstancesFunct = []
+  }
+
+  get selectedInstance () {
+    return this._selectedInstance
+  }
+
+  set selectedInstance (selectedInstance) {
+    this._selectedInstance = selectedInstance
+    this._subscribeSelectedInstanceFunct.forEach(functArrayElem => {
+      functArrayElem(selectedInstance)
+    })
+  }
+
+  subscribeSelectedInstance (funct) {
+    this._subscribeSelectedInstanceFunct.push(funct)
+  }
+
+  unsubscribeSelectedInstance (funct) {
+    this._subscribeSelectedInstanceFunct = this._subscribeSelectedInstanceFunct.filter(functArrayElem => functArrayElem !== funct)
+  }
+
+  get remoteMedia () {
+    return this._remoteMedia
+  }
+
+  set remoteMedia (remoteMedia) {
+    this._remoteMedia = remoteMedia
+    this._subscribeRemoteMediaFunct.forEach(functArrayElem => {
+      functArrayElem(remoteMedia)
+    })
+  }
+
+  subscribeRemoteMedia (funct) {
+    this._subscribeRemoteMediaFunct.push(funct)
+  }
+
+  unsubscribeRemoteMedia (funct) {
+    this._subscribeRemoteMediaFunct = this._subscribeRemoteMediaFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get alert () {
@@ -42,7 +94,7 @@ export default class StateAPI {
   }
 
   unsubscribeAlert (funct) {
-    this._subscribeAlertFunct = this._subscribeLoadingFunct.filter(functArrayElem => functArrayElem !== funct)
+    this._subscribeAlertFunct = this._subscribeAlertFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get progress () {
@@ -61,7 +113,7 @@ export default class StateAPI {
   }
 
   unsubscribeProgress (funct) {
-    this._subscribeProgressFunct = this._subscribeLoadingFunct.filter(functArrayElem => functArrayElem !== funct)
+    this._subscribeProgressFunct = this._subscribeProgressFunct.filter(functArrayElem => functArrayElem !== funct)
   }
 
   get loading () {

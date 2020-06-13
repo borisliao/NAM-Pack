@@ -14,6 +14,7 @@ export default function Selector () {
   const State = window.State
 
   useEffect(() => {
+    // TODO change State.loading to function args 'loading'
     function selectorHandleLoadingChange (loading) {
       setLoading(State.loading)
     }
@@ -22,15 +23,22 @@ export default function Selector () {
       setInstances(State.instances)
     }
 
+    function selectorHandleSelectedInstanceChange (loading) {
+      setSelected(State.selectedInstance)
+    }
+
     State.subscribeLoading(selectorHandleLoadingChange)
     State.subscribeInstances(selectorHandleInstancesChange)
+    State.subscribeSelectedInstance(selectorHandleSelectedInstanceChange)
 
     selectorHandleLoadingChange()
     selectorHandleInstancesChange()
+    selectorHandleSelectedInstanceChange()
 
     return function cleanup () {
       State.unsubscribeLoading(selectorHandleLoadingChange)
       State.unsubscribeInstances(selectorHandleInstancesChange)
+      State.unsubscribeSelectedInstance(selectorHandleSelectedInstanceChange)
     }
   })
 
