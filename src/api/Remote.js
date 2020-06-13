@@ -52,9 +52,13 @@ export default class Remote {
 
   async getProfile () {
     class HTTPError extends Error {}
+    const noCache = new Headers()
+    noCache.append('pragma', 'no-store')
+    noCache.append('cache-control', 'no-store')
 
-    const response = await fetch('https://cdn.jsdelivr.net/gh/borisliao/nam-dist@master/profiles.json', {
-      method: 'GET'
+    const response = await fetch('https://raw.githubusercontent.com/borisliao/nam-dist/master/profiles.json', {
+      method: 'GET',
+      headers: noCache
     })
 
     if (!response.ok) {
@@ -68,9 +72,13 @@ export default class Remote {
 
   async getMedia () {
     class HTTPError extends Error {}
+    const noCache = new Headers()
+    noCache.append('pragma', 'no-store')
+    noCache.append('cache-control', 'no-store')
 
-    const response = await fetch('https://cdn.jsdelivr.net/gh/borisliao/nam-dist@master/media.json', {
-      method: 'GET'
+    const response = await fetch('https://raw.githubusercontent.com/borisliao/nam-dist/master/media.json', {
+      method: 'GET',
+      headers: noCache
     })
 
     if (!response.ok) {
@@ -78,6 +86,7 @@ export default class Remote {
     }
 
     const parsed = await response.json()
+    console.log(parsed)
 
     return parsed
   }
