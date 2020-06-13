@@ -41,7 +41,7 @@ const mainMenuTemplate = [
       {
         label: 'Open process folder',
         click () {
-          shell.openItem(path.join(app.getPath('userData'), 'process'))
+          shell.openPath(path.join(app.getPath('userData'), 'process'))
         }
       },
       {
