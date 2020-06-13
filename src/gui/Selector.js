@@ -9,7 +9,7 @@ import { ipcRenderer } from 'electron'
 
 export default function Selector () {
   const [loading, setLoading] = useState(true)
-  const [instances, setInstances] = useState({name: 'Launch MultiMC', version: 'unknown'})
+  const [instances, setInstances] = useState(null)
   const [selected, setSelected] = useState(0)
   const State = window.State
 
@@ -49,13 +49,14 @@ export default function Selector () {
     ipcRenderer.send('close')
   }
 
-  let dropdown
-  let selections = []
-  if(State.instances !== undefined && State.instances.length !== 0){
-    for(const index in instances){
+  let dropdown = null
+  const selections = []
+  if (Array.isArray(instances) && instances.length) {
+    for (const index in instances) {
       const instanceName = instances[index].name
       const instanceVersion = instances[index].version
-      selections.push(<Dropdown.Item key={instanceName} onClick={e => { changeInstance(index) }}>{instanceName} <i>{' (v' + instanceVersion + ')'}</i></Dropdown.Item>)
+      const nameVersion = instanceName + ' (v' + instanceVersion + ')'
+      selections.push(<Dropdown.Item key={nameVersion} onClick={e => { changeInstance(index) }}>{instanceName} <i>{' (v' + instanceVersion + ')'}</i></Dropdown.Item>)
     }
     dropdown = <DropdownButton id="dropdown-basic-button" title={instances[selected].name}>{selections}</DropdownButton>
   }
