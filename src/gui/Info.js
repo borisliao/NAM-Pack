@@ -46,9 +46,10 @@ export default function Info () {
       const a = fs.readFileSync(diskPath)
       try {
         const jsonA = JSON.parse(a)
-        for (const key of Object.keys(jsonA)) {
-          mediaTitle.push(<h1 key={key}>{key}</h1>)
-        }
+        return jsonA
+        // for (const key of Object.keys(jsonA)) {
+        //   mediaTitle.push(<h1 key={key}>{key}</h1>)
+        // }
       } catch (e) {
         if (e.name !== 'SyntaxError') {
           console.error(e)
@@ -104,11 +105,17 @@ export default function Info () {
       <Media>
         <Media.Body>
           <Carousel>
-            {/* {mediaCarousel} */}
+            {media[State.instances[instance].name].img.map((url, index) => (
+              <Carousel.Item key={url}>
+                <img
+                  className="d-block w-100"
+                  src={url}
+                />
+              </Carousel.Item>
+            ))}
           </Carousel>
-          <h1>{instance}</h1>
-          {media}
-          {/* <p>{mediaDescription}</p> */}
+          <h5>{media[State.instances[instance].name].title}</h5>
+          <p>{media[State.instances[instance].name].description}</p>
         </Media.Body>
       </Media>
     </Container>
