@@ -155,7 +155,7 @@ export default class HostClient {
 
       const dlname = instArray[index].name
       const dlversion = instArray[index].version
-      mainProgress.state = 'Downloading ' + dlname + ' v' + dlversion
+      mainProgress.state = 'Getting initial zip file for ' + dlname + ' v' + dlversion
       const fileLocation = path.join(dlpath, getFilenameFromUrl(dlurl))
 
       const zipcb = function (progress) {
@@ -164,22 +164,26 @@ export default class HostClient {
         progressCallback(mainProgress)
       }
 
-      await this.dlIpc(dlurl, dlpath, zipcb)
-
-      console.log(fileLocation)
-      const modpack = createTwitch(fileLocation)
-
       // TODO : be more smart about updating old files and not just deleting them
       try {
         fs.rmdirSync(path.join(this.instancePath, dlname), { recursive: true })
       } catch (e) {
       }
 
+      await this.dlIpc(dlurl, dlpath, zipcb)
+
+      console.log(fileLocation)
+      const modpack = createTwitch(fileLocation)
+
       await modpack.createMultiMC(this.instancePath, (progress) => {
         mainProgress.percent = progress.percent
         mainProgress.totalDownloaded = progress.totalDownloaded
         mainProgress.total = progress.total
-        mainProgress.state = 'Downloading mods for ' + dlname
+        if (mainProgress.totalDownloaded === mainProgress.total - 1) {
+          mainProgress.state = 'Post processing, this might take a while'
+        } else {
+          mainProgress.state = 'Downloading mods for ' + dlname + ' ' + mainProgress.totalDownloaded + '/' + mainProgress.total
+        }
         progressCallback(mainProgress)
         console.log(mainProgress)
       })
