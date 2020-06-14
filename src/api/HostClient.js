@@ -169,6 +169,12 @@ export default class HostClient {
       console.log(fileLocation)
       const modpack = createTwitch(fileLocation)
 
+      // TODO : be more smart about updating old files and not just deleting them
+      try {
+        fs.rmdirSync(path.join(this.instancePath, dlname), { recursive: true })
+      } catch (e) {
+      }
+
       await modpack.createMultiMC(this.instancePath, (progress) => {
         mainProgress.percent = progress.percent
         mainProgress.totalDownloaded = progress.totalDownloaded
