@@ -20,7 +20,11 @@ module.exports = app
 function createWindow () {
   const mainMenuToolbar = require('./gui/MainMenuToolbar.js')
 
-  mainWindow = new BrowserWindow({ width: 800, height: 900, webPreferences: { nodeIntegration: true } })
+  if (process.env.NODE_ENV === 'test') {
+    mainWindow = new BrowserWindow({ width: 1600, height: 900, webPreferences: { nodeIntegration: true } })
+  } else {
+    mainWindow = new BrowserWindow({ width: 800, height: 900, webPreferences: { nodeIntegration: true } })
+  }
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
@@ -78,7 +82,7 @@ autoUpdater.on('update-available', (info) => {
   sendStatusToWindow('Update available.')
 })
 autoUpdater.on('update-not-available', (info) => {
-  sendStatusToWindow('You are up to date.')
+  sendStatusToWindow('The NAM Client is up to date.')
   mainWindow.send('latest')
 })
 autoUpdater.on('error', (err) => {
@@ -197,4 +201,10 @@ ipcMain.on('checkUpdate', function () {
 // catch close call
 ipcMain.on('close', function (e) {
   mainWindow.close()
+  app.exit()
+})
+
+ipcMain.on('relaunch', function() {
+  app.relaunch()
+  app.exit()
 })
