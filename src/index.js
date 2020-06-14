@@ -62,23 +62,25 @@ function readyLaunch () {
   State.selectedInstance = 0
 }
 
-function checkForInstanceUpdates () {
-  (async () => {
-    State.status = 'Checking for pack updates'
+async function checkForInstanceUpdates () {
+  State.status = 'Checking for pack updates'
 
-    const remote = new Remote()
+  const remote = new Remote()
 
-    const outOfDate = await remote.getOutOfDate(State.instances)
-    if (outOfDate.length === 0) {
-      readyLaunch()
-    } else {
-      await State.Host.installInstances(outOfDate, (mainProg) => {
-        State.progress = mainProg.percent * 100
-        State.status = mainProg.state
-      })
-      readyLaunch()
-    }
-  })()
+  console.error(State.Host.getInstances())
+  const outOfDate = await remote.getOutOfDate(State.Host.getInstances())
+  console.log(outOfDate)
+  if (outOfDate.length === 0) {
+    readyLaunch()
+  } else {
+    await State.Host.installInstances(outOfDate, (mainProg) => {
+      State.progress = mainProg.percent * 100
+      State.status = mainProg.state
+    })
+    // TODO: Hacky fix to avoid race condition 
+    // (State.instances will not load correctly if you just call loadInstances())
+    ipcRenderer.send('relaunch')
+  }
 }
 
 function loadDiskInstances () {
