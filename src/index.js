@@ -51,7 +51,7 @@ ipcRenderer.on('latest', () => {
 // -----------------------------------------------------------
 function readyLaunch () {
   try {
-    fs.rmdirSync(path.join(workingPath, 'MultiMC', 'instances', 'R.A.D.'))
+    fs.rmdirSync(path.join(workingPath, 'MultiMC', 'instances', 'R.A.D.'), { recursive: true })
   } catch (e) {
   }
   State.loading = false
