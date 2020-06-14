@@ -50,7 +50,10 @@ ipcRenderer.on('latest', () => {
 // App Tasks
 // -----------------------------------------------------------
 function readyLaunch () {
-  fs.rmdirSync(path.join(workingPath, 'MultiMC', 'instances', 'R.A.D.'))
+  try {
+    fs.rmdirSync(path.join(workingPath, 'MultiMC', 'instances', 'R.A.D.'))
+  } catch (e) {
+  }
   State.loading = false
   State.status = 'Ready to play!'
   // TODO: FIX
