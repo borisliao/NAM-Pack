@@ -76,7 +76,7 @@ function checkForInstanceUpdates () {
         State.progress = mainProg.percent * 100
         State.status = mainProg.state
       })
-      loadDiskInstances()
+      readyLaunch()
     }
   })()
 }
