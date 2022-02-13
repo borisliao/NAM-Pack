@@ -69,7 +69,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.14",
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.3",
     "bootstrap": "^4.5.0",
     "electron-dl": "^3.0.0",
     "electron-updater": "^4.3.1",
